@@ -11,6 +11,8 @@ import {
   Feather,
 } from "@expo/vector-icons";
 
+import Loading from "../screens/Loading";
+import Login from "../screens/Login"
 import Home from "../screens/Home"
 import Calendar from "../screens/Calendar"
 import Event from "../screens/Event"
@@ -19,6 +21,7 @@ import Setting from "../screens/Setting"
 
 const DrawerNavigator = createDrawerNavigator();
 const BottmTapNavigator = createBottomTabNavigator();
+const StackLoginNavigator = createNativeStackNavigator();
 
 function HomeNavigator(){
   return(
@@ -44,6 +47,14 @@ function MainNavigator() {
   );
 }
 
+function LoginNavigator(){
+  return (
+    <StackLoginNavigator.Navigator initialRouteName="Loading" screenOptions={{headerShown: false}}>
+      <StackLoginNavigator.Screen name="Loading" component={Loading} />
+      <StackLoginNavigator.Screen name="Login" component={Login} />
+    </StackLoginNavigator.Navigator>
+  );
+}
 
 
 
@@ -51,6 +62,7 @@ export default function Navigator() {
   return (
     <NavigationContainer>
       <MainNavigator/>
+      {/* <LoginNavigator/> */}
     </NavigationContainer>
   );
 }

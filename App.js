@@ -1,12 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet , Text, View } from "react-native";
 
 import Navigator from "./assets/src/navigation/Navigator";
-import Login from "./assets/src/screens/Login"
+import Login from "./assets/src/screens/Loading"
 
 export default function App() {
   return (
-    // <Login/>
     <Navigator/>
   );
 };
