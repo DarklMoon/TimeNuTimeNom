@@ -30,7 +30,7 @@ const Loading = (props) => {
         <View>
           <Image
           style={styles.img}
-            source={require("../../image/calendar-icon.png")}
+            source={require("../../../image/calendar-icon.png")}
           />
         </View>
     </LinearGradient>

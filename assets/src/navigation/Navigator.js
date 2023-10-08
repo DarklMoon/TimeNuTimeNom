@@ -11,8 +11,12 @@ import {
   Feather,
 } from "@expo/vector-icons";
 
-import Loading from "../screens/Loading";
-import Login from "../screens/Login"
+import Loading from "../screens/Login/Loading"
+import Login from "../screens/Login/Login"
+import Register from "../screens/Login/Register"
+import RecoveryPW from "../screens/Login/RecoveryPW"
+import ConfirmEmail from "../screens/Login/ConfirmEmail";
+import ResetPW from "../screens/Login/ResetPW"
 import Home from "../screens/Home"
 import Calendar from "../screens/Calendar"
 import Event from "../screens/Event"
@@ -49,9 +53,16 @@ function MainNavigator() {
 
 function LoginNavigator(){
   return (
-    <StackLoginNavigator.Navigator initialRouteName="Loading" screenOptions={{headerShown: false}}>
+    <StackLoginNavigator.Navigator
+      initialRouteName="Loading"
+      screenOptions={{ headerShown: false }}
+    >
       <StackLoginNavigator.Screen name="Loading" component={Loading} />
       <StackLoginNavigator.Screen name="Login" component={Login} />
+      <StackLoginNavigator.Screen name="RecoveryPW" component={RecoveryPW} />
+      <StackLoginNavigator.Screen name="ConfirmEmail" component={ConfirmEmail}/>
+      <StackLoginNavigator.Screen name="ResetPW" component={ResetPW} />
+      <StackLoginNavigator.Screen name="Register" component={Register} />
     </StackLoginNavigator.Navigator>
   );
 }
@@ -61,8 +72,8 @@ function LoginNavigator(){
 export default function Navigator() {
   return (
     <NavigationContainer>
-      <MainNavigator/>
-      {/* <LoginNavigator/> */}
+      {/* <MainNavigator/> */}
+      <LoginNavigator/>
     </NavigationContainer>
   );
 }
