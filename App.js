@@ -4,11 +4,13 @@ import { StatusBar } from 'expo-status-bar';
 import { Calendar,Agenda } from 'react-native-calendars';
 
 import Navigator from "./assets/src/navigation/Navigator";
+import Dashboard from './assets/src/screens/Dashboard';
 import Mynavigation from './screen/Mynavigation';
 
 export default function App() {
   return (
     <Navigator/>
+    // <Dashboard/>
     // <Mynavigation></Mynavigation>
   )
 

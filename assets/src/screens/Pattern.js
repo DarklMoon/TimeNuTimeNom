@@ -2,13 +2,14 @@ import React from "react";
 // import library ที่จำเป็น
 import { StyleSheet, Text, View } from "react-native";
 
-const Calendar = (props) => {
-  return (
-    <View style={styles.root}>
-      <Text>Calendar Page</Text>
-    </View>
-  );
-};
+
+const Pattern = (props) => {
+    return(
+        <View style={styles.root}>
+            <Text>Pattern Page</Text>
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
   root: {
@@ -18,4 +19,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Calendar;
+export default Pattern

@@ -18,9 +18,9 @@ const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const {height} = useWindowDimensions();
-  const screenHeight = Dimensions.get("window").height;
   const signInPress = () =>{
       console.warn('Sin in');
+      navigation.navigate('Main');
   }
 
   const recoveryPWNavigator = () => {
