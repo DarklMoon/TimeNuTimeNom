@@ -1,17 +1,40 @@
-import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet, Text, View, ScrollView} from "react-native";
 import { TimeDatePicker, Modes } from "react-native-time-date-picker";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, Agenda } from "react-native-calendars";
 import { LinearGradient } from "expo-linear-gradient";
 
+import HeaderComponent from "../components/HeaderComponent";
 
-const Dashboard = () => {
+
+const Dashboard = ({ navigation }) => {
   const [selected, setSelected] = useState("");
   const [selectedDate, setSelectedDate] = useState([""]);
 
+ useEffect(() => {
+   // This effect runs once when the component mounts
+   const currentDay = new Date();
+   const currentDayS = currentDay.toISOString().slice(0, 10);
+   setSelected(currentDayS);
+ }, []);
+
+  const rawSelectdDay = new Date(selected);
   console.log("SELECTED:", selected);
+
+  const dayNumber = rawSelectdDay.getDay();
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const dayName = daysOfWeek[dayNumber];
+  console.log("CONVERT:", dayName);
+
 
   return (
     <LinearGradient
@@ -21,9 +44,9 @@ const Dashboard = () => {
       style={styles.container}
     >
       <View style={styles.container}>
+        <HeaderComponent navigation={navigation} />
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.boxBackground}>
-            <View>
               <View style={{ position: "relative" }}>
                 <Text
                   style={{
@@ -37,11 +60,10 @@ const Dashboard = () => {
                   Dashboard
                 </Text>
                 <Text style={{ position: "absolute", right: 25, bottom: 25 }}>
-                  2023-10-11
+                  {selected}
                 </Text>
                 <View style={styles.line}></View>
               </View>
-            </View>
             <View style={{ flex: 2 }}>
               <Calendar
                 style={styles.carlender}
@@ -110,7 +132,7 @@ const Dashboard = () => {
                 }}
               />
             </View>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", marginBottom: 20}}>
               <View
                 style={{
                   flex: 0.5,
@@ -118,12 +140,24 @@ const Dashboard = () => {
                   width: 100,
                   height: 100,
                   margin: 10,
-                  marginBottom: 100,
+                  borderRadius: 10,
                 }}
               >
-                <Text>Completed</Text>
-                <Text>15 events</Text>
-                {/* <Button title="Add Activity" onPress={Date()}></Button> */}
+                <View style={{ position: "relative" }}>
+                  <View style={{ position: "relative", top: 12, left: 15 }}>
+                    <Text style={{ color: "white", fontSize: 18 }}>
+                      Completed
+                    </Text>
+                  </View>
+                  <View style={{ position: "relative", top: 23, left: 35 }}>
+                    <Text style={{ color: "white", fontSize: 15 }}>
+                      <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+                        15
+                      </Text>{" "}
+                      events
+                    </Text>
+                  </View>
+                </View>
               </View>
               <View
                 style={{
@@ -133,11 +167,24 @@ const Dashboard = () => {
                   height: 100,
                   margin: 10,
                   marginBottom: 100,
+                  borderRadius: 10,
                 }}
               >
-                <Text>To Do</Text>
-                <Text>20 events</Text>
-                {/* <Button title="Add Activity" onPress={Date()}></Button> */}
+                <View style={{ position: "relative" }}>
+                  <View style={{ position: "relative", top: 12, left: 15 }}>
+                    <Text style={{ color: "white", fontSize: 18 }}>
+                      To Do
+                    </Text>
+                  </View>
+                  <View style={{ position: "relative", top: 23, left: 35 }}>
+                    <Text style={{ color: "white", fontSize: 15 }}>
+                      <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+                        20
+                      </Text>{" "}
+                      events
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
           </View>
@@ -159,7 +206,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     height: 680,
-    marginTop: 80,
+    marginTop: 10,
     borderRadius: 10,
   },
   carlender: {

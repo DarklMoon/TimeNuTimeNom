@@ -36,7 +36,8 @@ function MainNavigator() {
                 backgroundColor: '#5BC8B2',
                 width: 240,
 
-            }, drawerActiveBackgroundColor: "#A2E8DC",
+            }, 
+            drawerActiveBackgroundColor: "#A2E8DC",
             drawerInactiveTintColor: "white",
             drawerLabelStyle: { fontSize: 18 },
 

@@ -3,7 +3,12 @@ import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   SimpleLineIcons,
@@ -99,6 +104,8 @@ function HomeNavigator(){
   );
 }
 
+
+
 function MainNavigator() {
   return (
     <DrawerNavigator.Navigator
@@ -111,9 +118,9 @@ function MainNavigator() {
         component={HomeNavigator}
         options={{
           title: "Dashboard",
-          headerShown: true,
+          headerShown: false,
           headerStyle: {
-            height: 0,
+            height: 50,
           },
           drawerIcon: ({ focused, size }) => (
             <MaterialCommunityIcons
