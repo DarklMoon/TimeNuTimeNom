@@ -31,7 +31,7 @@ import Pattern from "../screens/Pattern/Pattern";
 import PatternDetail from "../screens/Pattern/PatternDetail";
 import Event from "../screens/Event";
 import Category from "../screens/Category";
-import Setting from "../screens/Setting";
+import Setting from "../screens/SettingPage";
 
 // import Test from "../components/Test";
 // import Test2 from "../components/Test2";
