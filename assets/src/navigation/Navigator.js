@@ -226,8 +226,8 @@ export default function Navigator() {
 
   return (
     <NavigationContainer>
-      <MainNavigator></MainNavigator>
-      {/* <LoginNavigator></LoginNavigator> */}
+      {/* <MainNavigator></MainNavigator> */}
+      <LoginNavigator></LoginNavigator>
     </NavigationContainer>
   );
 }

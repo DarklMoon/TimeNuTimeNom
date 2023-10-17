@@ -43,6 +43,7 @@ const Pattern = ({navigation}) => {
         <Item
           item={item}
           onPress={() => setSelectedId(item.id)}
+          onS
           backgroundColor={backgroundColor}
           textColor={color}
           days={arrayOfDays}
