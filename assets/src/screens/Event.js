@@ -11,7 +11,7 @@ function Event() {
 
   return (
     <View style={styles.flexView}>
-      <StatusBar />
+      <StatusBar hidden={true} />
       <View style={styles.btnContainer}>
         <Button title="Show Bottom Sheet" onPress={toggleModal} />
       </View>

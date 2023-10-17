@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, ScrollView} from "react-native";
+import { Button, StyleSheet, Text, View, ScrollView, StatusBar} from "react-native";
 import { TimeDatePicker, Modes } from "react-native-time-date-picker";
 
 import React, { useState, useEffect } from "react";
@@ -43,27 +43,30 @@ const Dashboard = ({ navigation }) => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
+      <StatusBar
+        hidden={true}
+      />
       <View style={styles.container}>
         <HeaderComponent navigation={navigation} />
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.boxBackground}>
-              <View style={{ position: "relative" }}>
-                <Text
-                  style={{
-                    fontSize: 30,
-                    fontWeight: "bold",
-                    paddingTop: 30,
-                    paddingLeft: 20,
-                    paddingBottom: 10,
-                  }}
-                >
-                  Dashboard
-                </Text>
-                <Text style={{ position: "absolute", right: 25, bottom: 25 }}>
-                  {selected}
-                </Text>
-                <View style={styles.line}></View>
-              </View>
+            <View style={{ position: "relative" }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  paddingTop: 30,
+                  paddingLeft: 20,
+                  paddingBottom: 10,
+                }}
+              >
+                Dashboard
+              </Text>
+              <Text style={{ position: "absolute", right: 25, bottom: 25 }}>
+                {selected}
+              </Text>
+              <View style={styles.line}></View>
+            </View>
             <View style={{ flex: 2 }}>
               <Calendar
                 style={styles.carlender}
@@ -132,7 +135,7 @@ const Dashboard = ({ navigation }) => {
                 }}
               />
             </View>
-            <View style={{ flexDirection: "row", marginBottom: 20}}>
+            <View style={{ flexDirection: "row", marginBottom: 20 }}>
               <View
                 style={{
                   flex: 0.5,
@@ -172,9 +175,7 @@ const Dashboard = ({ navigation }) => {
               >
                 <View style={{ position: "relative" }}>
                   <View style={{ position: "relative", top: 12, left: 15 }}>
-                    <Text style={{ color: "white", fontSize: 18 }}>
-                      To Do
-                    </Text>
+                    <Text style={{ color: "white", fontSize: 18 }}>To Do</Text>
                   </View>
                   <View style={{ position: "relative", top: 23, left: 35 }}>
                     <Text style={{ color: "white", fontSize: 15 }}>
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
   },
   line: {
     position: "absolute",
-    right:25,
+    right: 25,
     bottom: 25,
     height: 1,
     width: "40%",

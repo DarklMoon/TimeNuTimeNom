@@ -7,32 +7,26 @@ import { Button,
   FlatList, 
   SafeAreaView, 
   StatusBar, 
+  Image,
   TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-import HeaderComponent from "../components/HeaderComponent";
+import { DATA } from "../../data/PatternData"
+import HeaderComponent from "../../components/HeaderComponent";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
-
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
+const Item = ({ item, onPress, backgroundColor, textColor, days }) => (
   <TouchableOpacity
     onPress={onPress}
     style={[styles.item, { backgroundColor }]}
   >
     <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+    <View style={{ flexDirection: "row", marginTop:10 }}>
+      {days.map((str, index) => (
+        <Text key={index} style={[styles.days, { color: textColor }]}>
+          {index === days.length - 1 ? str + ". " : str + ". "}
+        </Text>
+      ))}
+    </View>
   </TouchableOpacity>
 );
 
@@ -40,8 +34,10 @@ const Pattern = ({navigation}) => {
     const [selectedId, setSelectedId] = useState();
 
     const renderItem = ({ item }) => {
-      const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
-      const color = item.id === selectedId ? "white" : "black";
+      // const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
+      const backgroundColor = item.backgroundColor;
+      const color = item.id === selectedId ? "black" : "white";
+      const arrayOfDays = Object.keys(item.days)
 
       return (
         <Item
@@ -49,6 +45,7 @@ const Pattern = ({navigation}) => {
           onPress={() => setSelectedId(item.id)}
           backgroundColor={backgroundColor}
           textColor={color}
+          days={arrayOfDays}
         />
       );
     };
@@ -60,6 +57,7 @@ const Pattern = ({navigation}) => {
         end={{ x: 1, y: 1 }}
         style={styles.container}
       >
+        <StatusBar hidden={true} />
         <View style={styles.container}>
           <HeaderComponent navigation={navigation} />
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -87,6 +85,12 @@ const Pattern = ({navigation}) => {
                   extraData={selectedId}
                 />
               </SafeAreaView>
+              <View style={styles.img}>
+                <Image
+                  style={{ width: 50, height: 50, resizeMode: "contain" }}
+                  source={require("../../../image/IconAdded.png")}
+                />
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -100,6 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     backgroundColor: ["#ff6347", "#3498db"],
+    // marginTop: StatusBar.currentHeight || 0,
   },
   boxBackground: {
     backgroundColor: "white",
@@ -126,9 +131,19 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    borderRadius: 10,
   },
   title: {
     fontSize: 32,
+    fontWeight: "bold",
+  },
+  days: {
+    fontSize: 15,
+  },
+  img: {
+    position: "absolute",
+    right: 15,
+    bottom:20
   },
 });
 
