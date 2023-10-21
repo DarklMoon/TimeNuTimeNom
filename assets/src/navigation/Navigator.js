@@ -3,12 +3,7 @@ import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from "@react-navigation/drawer";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   SimpleLineIcons,
@@ -27,203 +22,183 @@ import ConfirmEmail from "../screens/Login/ConfirmEmail";
 import ResetPW from "../screens/Login/ResetPW";
 
 import Dashboard from "../screens/Dashboard";
-import Pattern from "../screens/Pattern/Pattern";
-import PatternDetail from "../screens/Pattern/PatternDetail";
+import Pattern from "../screens/Pattern";
 import Event from "../screens/Event";
 import Category from "../screens/Category";
-import Setting from "../screens/SettingPage/Setting";
+import CatagoryPage from "../../../screen/CatagoryPage";
+import Setting from "../screens/Setting";
+import addevent from "../screens/AddEvent";
+import EditEvent from "../../../screen/EditEvent";
 
-// import Test from "../components/Test";
-// import Test2 from "../components/Test2";
 const DrawerNavigator = createDrawerNavigator();
 const BottmTapNavigator = createBottomTabNavigator();
-const StackPatternNavigator = createNativeStackNavigator();
 const StackLoginNavigator = createNativeStackNavigator();
 
-export default function Navigator() {
+function AddEventNavigator() {
+  return (
+    <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
+      <StackLoginNavigator.Screen name="Catagory" component={Category} />
+      <StackLoginNavigator.Screen name="Event" component={Event} />
+      <StackLoginNavigator.Screen name="addEvent" component={addevent} />
+      <StackLoginNavigator.Screen name="EditEvent" component={EditEvent} />
+    </StackLoginNavigator.Navigator>
+  );
+}
 
-  function PatternNavigator() {
-    return (
-      <StackPatternNavigator.Navigator
-        screenOptions={{ headerShown: false }}
-        initialRouteName="Pattern"
-      >
-        <StackPatternNavigator.Screen
-          name="Pattern"
-          component={Pattern}
-          options={{
-            title: "Pattern",
-          }}
-        />
-
-        <StackPatternNavigator.Screen
-          name="PatternDetail"
-          component={PatternDetail}
-          options={{
-            title: "PatternDetail",
-          }}
-        />
-      </StackPatternNavigator.Navigator>
-    );
-  }
-
-  function HomeNavigator() {
-    return (
-      <BottmTapNavigator.Navigator screenOptions={{ headerShown: false }}>
-        <BottmTapNavigator.Screen
-          name="Dashboard"
-          component={Dashboard}
-          options={{
-            tabBarIcon: ({ color, size }) => {
-              return (
-                <MaterialIcons name="dashboard" size={size} color={color} />
-              );
-            },
-          }}
-        />
-        <BottmTapNavigator.Screen
-          name="Event"
-          component={Event}
-          options={{
-            tabBarIcon: ({ color, size }) => {
-              return (
-                <MaterialIcons name="event-note" size={size} color={color} />
-              );
-            },
-          }}
-        />
-        <BottmTapNavigator.Screen
-          name="Category"
-          component={Category}
-          options={{
-            tabBarIcon: ({ color, size }) => {
-              return (
-                <MaterialIcons name="category" size={size} color={color} />
-              );
-            },
-          }}
-        />
-        <BottmTapNavigator.Screen
-          name="Pattern"
-          component={PatternNavigator}
-          options={{
-            tabBarIcon: ({ color, size }) => {
-              return (
-                <MaterialCommunityIcons
-                  name="car-shift-pattern"
-                  size={size}
-                  color={color}
-                />
-              );
-            },
-          }}
-        />
-        <BottmTapNavigator.Screen
-          name="Setting"
-          component={Setting}
-          options={{
-            tabBarIcon: ({ color, size }) => {
-              return <Feather name="settings" size={size} color={color} />;
-            },
-          }}
-        />
-      </BottmTapNavigator.Navigator>
-    );
-  }
-
-  function MainNavigator() {
-    return (
-      <DrawerNavigator.Navigator
-        screenOptions={{
-          headerShown: false,
+function HomeNavigator() {
+  return (
+    <BottmTapNavigator.Navigator screenOptions={{ headerShown: false }}>
+      <BottmTapNavigator.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return <MaterialIcons name="dashboard" size={size} color={color} />;
+          },
         }}
-      >
-        <DrawerNavigator.Screen
-          name="Dashboard"
-          component={HomeNavigator}
-          options={{
-            title: "Dashboard",
-            headerShown: false,
-            headerStyle: {
-              height: 50,
-            },
-            drawerIcon: ({ focused, size }) => (
+      />
+      <BottmTapNavigator.Screen
+        name="Event"
+        component={Event}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <MaterialIcons name="event-note" size={size} color={color} />
+            );
+          },
+        }}
+      />
+      <BottmTapNavigator.Screen
+        name="Category"
+        component={AddEventNavigator}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return <MaterialIcons name="category" size={size} color={color} />;
+          },
+        }}
+      />
+      <BottmTapNavigator.Screen
+        name="Pattern"
+        component={Pattern}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return (
               <MaterialCommunityIcons
-                name={focused ? "view-dashboard" : "view-dashboard-outline"}
+                name="car-shift-pattern"
                 size={size}
-                color="black"
+                color={color}
               />
-            ),
-          }}
-        />
-        <DrawerNavigator.Screen
-          name="Event"
-          component={Event}
-          options={{
-            title: "Event",
-            headerShown: true,
-            headerStyle: {
-              height: 0,
-            },
-          }}
-        />
-        <DrawerNavigator.Screen
-          name="Category"
-          component={Category}
-          options={{
-            title: "Dashboard",
-            headerShown: true,
-            headerStyle: {
-              height: 0,
-            },
-          }}
-        />
-        <DrawerNavigator.Screen
-          name="Pattern"
-          component={PatternNavigator}
-          options={{
-            title: "Pattern",
-            headerShown: true,
-            headerStyle: {
-              height: 0,
-            },
-          }}
-        />
-        <DrawerNavigator.Screen
-          name="Setting"
-          component={Setting}
-          options={{
-            title: "Setting",
-            headerShown: true,
-            headerStyle: {
-              height: 0,
-            },
-          }}
-        />
-      </DrawerNavigator.Navigator>
-    );
-  }
+            );
+          },
+        }}
+      />
+      <BottmTapNavigator.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return <Feather name="settings" size={size} color={color} />;
+          },
+        }}
+      />
+    </BottmTapNavigator.Navigator>
+  );
+}
 
-  function LoginNavigator() {
-    return (
-      <StackLoginNavigator.Navigator
-        initialRouteName="Loading"
-        screenOptions={{ headerShown: false }}
-      >
-        <StackLoginNavigator.Screen name="Loading" component={Loading} />
-        <StackLoginNavigator.Screen name="Login" component={Login} />
-        <StackLoginNavigator.Screen name="RecoveryPW" component={RecoveryPW} />
-        <StackLoginNavigator.Screen
-          name="ConfirmEmail"
-          component={ConfirmEmail}
-        />
-        <StackLoginNavigator.Screen name="ResetPW" component={ResetPW} />
-        <StackLoginNavigator.Screen name="Register" component={Register} />
-        <StackLoginNavigator.Screen name="Main" component={MainNavigator} />
-      </StackLoginNavigator.Navigator>
-    );
-  }
+function MainNavigator() {
+  return (
+    <DrawerNavigator.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <DrawerNavigator.Screen
+        name="Dashboard"
+        component={HomeNavigator}
+        options={{
+          title: "Dashboard",
+          headerShown: true,
+          headerStyle: {
+            height: 0,
+          },
+          drawerIcon: ({ focused, size }) => (
+            <MaterialCommunityIcons
+              name={focused ? "view-dashboard" : "view-dashboard-outline"}
+              size={size}
+              color="black"
+            />
+          ),
+        }}
+      />
+      <DrawerNavigator.Screen
+        name="Event"
+        component={Event}
+        options={{
+          title: "Event",
+          headerShown: true,
+          headerStyle: {
+            height: 0,
+          },
+        }}
+      />
+      <DrawerNavigator.Screen
+        name="Category"
+        component={Category}
+        options={{
+          title: "Dashboard",
+          headerShown: true,
+          headerStyle: {
+            height: 0,
+          },
+        }}
+      />
+      <DrawerNavigator.Screen
+        name="Pattern"
+        component={Pattern}
+        options={{
+          title: "Dashboard",
+          headerShown: true,
+          headerStyle: {
+            height: 0,
+          },
+        }}
+      />
+      <DrawerNavigator.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          title: "Dashboard",
+          headerShown: true,
+          headerStyle: {
+            height: 0,
+          },
+        }}
+      />
+    </DrawerNavigator.Navigator>
+  );
+}
 
+function LoginNavigator() {
+  return (
+    <StackLoginNavigator.Navigator
+      initialRouteName="Loading"
+      screenOptions={{ headerShown: false }}
+    >
+      <StackLoginNavigator.Screen name="Loading" component={Loading} />
+      <StackLoginNavigator.Screen name="Login" component={Login} />
+      <StackLoginNavigator.Screen name="RecoveryPW" component={RecoveryPW} />
+      <StackLoginNavigator.Screen
+        name="ConfirmEmail"
+        component={ConfirmEmail}
+      />
+      <StackLoginNavigator.Screen name="ResetPW" component={ResetPW} />
+      <StackLoginNavigator.Screen name="Register" component={Register} />
+      <StackLoginNavigator.Screen name="Main" component={MainNavigator} />
+    </StackLoginNavigator.Navigator>
+  );
+}
+
+export default function Navigator() {
   return (
     <NavigationContainer>
       <MainNavigator></MainNavigator>

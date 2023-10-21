@@ -4,7 +4,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import CatagoryPage from "./CatagoryPage";
 import CalendarPage from "./CalendarPage";
-import AddEvent from "./AddEvent";
+import AddEvent from "../assets/src/screens/AddEvent";
 import EventPage from "./EventPage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -36,8 +36,7 @@ function MainNavigator() {
                 backgroundColor: '#5BC8B2',
                 width: 240,
 
-            }, 
-            drawerActiveBackgroundColor: "#A2E8DC",
+            }, drawerActiveBackgroundColor: "#A2E8DC",
             drawerInactiveTintColor: "white",
             drawerLabelStyle: { fontSize: 18 },
 
