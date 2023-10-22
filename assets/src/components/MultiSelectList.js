@@ -8,22 +8,23 @@ const MultiSelectList = ({ info }) => {
     
   return (
     <View>
-      <View>
+      <View style={{margin: 10}}>
+        <MultipleSelectList
+          placeholder={"Select your events"}
+          setSelected={(val) => setSelected(val)}
+          data={info}
+          save="value"
+          onSelect={() => console.log(selected)}
+          label="Events"
+        />
+      </View>
+      {/* <View>
         <SelectList
           setSelected={(val) => setSelected(val)}
           data={info}
           save="value"
         />
-      </View>
-      <View>
-        <MultipleSelectList
-          setSelected={(val) => setSelected(val)}
-          data={info}
-          save="value"
-          onSelect={() => alert(selected)}
-          label="Categories"
-        />
-      </View>
+      </View> */}
     </View>
   );
 };

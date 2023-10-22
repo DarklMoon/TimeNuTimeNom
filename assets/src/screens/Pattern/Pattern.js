@@ -21,6 +21,8 @@ import CardPattern from "../../components/CardPattern";
 import InputField from "../../components/InputField";
 import CustomCheckBox from "../../components/CustomCheckBox"
 import CheckboxComponent from "../../components/CheckboxComponent";
+import MultiSelectList from "../../components/MultiSelectList";
+import ButtonComponent from "../../components/ButtonComponent";
 
 
 const Pattern = ({navigation}) => {
@@ -149,9 +151,9 @@ const Pattern = ({navigation}) => {
                     <Text
                       style={{
                         position: "absolute",
-                        top: -13,
+                        top: -16,
                         left: 35,
-                        fontSize: 12,
+                        // fontSize: 12,
                         fontWeight: "700",
                       }}
                     >
@@ -164,18 +166,45 @@ const Pattern = ({navigation}) => {
                     />
                   </View>
                 </View>
-                  {/* <CustomCheckBox/> */}
-                <View style={{padding: 20}}>
-                  <CheckboxComponent label={"Monday"}/>
-                  <CheckboxComponent label={"Tuesday"}/>
-                  <CheckboxComponent label={"Wednesday"}/>
-                  <CheckboxComponent label={"Thursday"}/>
-                  <CheckboxComponent label={"Friday"}/>
-                  <CheckboxComponent label={"Saturday"}/>
-                  <CheckboxComponent label={"Sunday"}/>
+                {/* <CustomCheckBox/> */}
+                <View style={{ padding: 20 }}>
+                  <View style={{ marginLeft: 15, marginBottom: 10 }}>
+                    <Text style={{ fontWeight: "bold" }}>Select day</Text>
+                  </View>
+                  <CheckboxComponent label={"Monday"} />
+                  <CheckboxComponent label={"Tuesday"} />
+                  <CheckboxComponent label={"Wednesday"} />
+                  <CheckboxComponent label={"Thursday"} />
+                  <CheckboxComponent label={"Friday"} />
+                  <CheckboxComponent label={"Saturday"} />
+                  <CheckboxComponent label={"Sunday"} />
+
+                  <View
+                    style={{
+                      width: "100%",
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                      marginTop: 30,
+                      paddingBottom: 30,
+                    }}
+                  >
+                    <ButtonComponent
+                      text={"Add Pattern"}
+                      width={"40%"}
+                      // onPress={}
+                    />
+                    <ButtonComponent
+                      text={"Cancel"}
+                      width={"40%"}
+                      type={"Cancel"}
+                      onPress={() => {
+                        setModalVisible(false);
+                        setPatternTitle("");
+                      }}
+                    />
+                  </View>
                 </View>
               </View>
-              
             </ScrollView>
           </Modal>
         </View>
