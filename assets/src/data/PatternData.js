@@ -2,23 +2,28 @@ export const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
     title: "Workout Pattern",
-    backgroundColor: "#5C6DFF",
+    bgColor: "#5C6DFF",
     days: {
       Mon: {
         event00: {
-          title: "Event-00",
-          catogories: [],
+          title: "Running Time",
+          catogories: {
+            WorkOut: "#FFA607",
+          },
           place: "",
-          startTime: "",
+          startTime: "16:00",
           endTime: "",
           description: "",
           image: "",
         },
         event01: {
-          title: "Event-00",
-          catogories: [],
+          title: "Play Football",
+          catogories: {
+            WorkOut: "#FFA607",
+            Sport: "#41D5E0",
+          },
           place: "",
-          startTime: "",
+          startTime: "15:00",
           endTime: "",
           description: "",
           image: "",
@@ -26,10 +31,12 @@ export const DATA = [
       },
       Wed: {
         event02: {
-          title: "Event-02",
-          catogories: [],
+          title: "Lift Weights",
+          catogories: {
+            WorkOut: "#FFA607",
+          },
           place: "",
-          startTime: "",
+          startTime: "16:00",
           endTime: "",
           description: "",
           image: "",
@@ -37,10 +44,10 @@ export const DATA = [
       },
       Fri: {
         event03: {
-          title: "Event-03",
+          title: "Sit up",
           catogories: [],
           place: "",
-          startTime: "",
+          startTime: "16:00",
           endTime: "",
           description: "",
           image: "",
@@ -51,14 +58,14 @@ export const DATA = [
   {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
     title: "Study Time",
-    backgroundColor: "#0596FF",
+    bgColor: "#0596FF",
     days: {
       Sat: {
         event04: {
           title: "Event-04",
           catogories: [],
           place: "",
-          startTime: "",
+          startTime: "07:30",
           endTime: "",
           description: "",
           image: "",
@@ -69,7 +76,7 @@ export const DATA = [
           title: "Event-05",
           catogories: [],
           place: "",
-          startTime: "",
+          startTime: "10:00",
           endTime: "",
           description: "",
           image: "",
@@ -80,14 +87,14 @@ export const DATA = [
   {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
     title: "Sport Time",
-    backgroundColor: "#E086FF",
+    bgColor: "#E086FF",
     days: {
       Tue: {
         event06: {
           title: "Event-06",
           catogories: [],
           place: "",
-          startTime: "",
+          startTime: "22:00",
           endTime: "",
           description: "",
           image: "",
