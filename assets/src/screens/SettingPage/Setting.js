@@ -27,7 +27,7 @@ const handleLogout = async ()=>{
   await signOut(auth);
 }
 
-const Setting = (props) => {
+const Setting = ({navigation}) => {
   return (
     <LinearGradient
       colors={["#2FBCBC", "#D8FFF8"]}
@@ -96,6 +96,7 @@ const Setting = (props) => {
                   {/*เเต่ละfunction*/}
                   <TouchableOpacity
                     style={{ width: "100%", height: 60, flexDirection: "row" }}
+                    onPress={() => {navigation.navigate("Profile")}}
                   >
                     {/*รูป*/}
                     <View style={{ width: 60, height: "100%" }}>
@@ -148,6 +149,7 @@ const Setting = (props) => {
                       flexDirection: "row",
                       marginTop: 10,
                     }}
+                    onPress={() => {navigation.navigate("Reset")}}
                   >
                     {/*รูป*/}
                     <View style={{ width: 60, height: "100%" }}>

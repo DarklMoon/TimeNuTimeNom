@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Button} from 'react-native';
+import { StyleSheet, Text, View, TextInput,TouchableOpacity} from 'react-native';
 import React from 'react';
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -11,7 +11,7 @@ const Reset = (props) =>  {
               style={styles.container}
         >
           <View style={{ alignItems:'center', justifyContent:'center',width:'100%',marginTop:80}}>
-            <View style ={{backgroundColor:'white',  width:350, height:380, borderBottomLeftRadius:10, borderBottomRightRadius:10,borderTopLeftRadius:10, borderTopRightRadius:10, alignItems:'center'}}>
+            <View style ={{backgroundColor:'white',  width:350, height:400, borderBottomLeftRadius:10, borderBottomRightRadius:10,borderTopLeftRadius:10, borderTopRightRadius:10, alignItems:'center'}}>
                 <Text style={{marginTop:20,marginLeft:15, fontWeight:'bold', fontSize:25, alignSelf:'left'}}>Reset Password</Text>
                 <View style = {{width:300, height:300, marginTop:20}}>
                     <Text style={{fontWeight:'bold', fontSize:20}}>New Password</Text>
@@ -24,7 +24,9 @@ const Reset = (props) =>  {
                                keyboardType='text'
                                placeholder='Enter new password'
                     />
-                    <Button title='Confirm' color={'black'} />
+                    <TouchableOpacity style={{alignSelf:'flex-end',width:150,height:60,backgroundColor:'red',borderRadius:10, justifyContent:'center'}}>
+                      <Text style={{textAlign:'center',fontSize:20,color:'white',fontWeight:'bold'}}>Confirm</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
           </View>
@@ -36,6 +38,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
+      justifyContent:'center'
     },
   });
 

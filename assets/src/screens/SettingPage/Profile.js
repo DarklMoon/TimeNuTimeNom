@@ -11,7 +11,7 @@ const Profile = (props) => {
           style={styles.container}
     >
       <View style={{ alignItems:'center', justifyContent:'center',width:'100%',marginTop:80}}>
-        <View style ={{backgroundColor:'white',  width:350, height:450, borderBottomLeftRadius:10, borderBottomRightRadius:10,borderTopLeftRadius:10, borderTopRightRadius:10, alignItems:'center'}}>
+        <View style ={{backgroundColor:'white',  width:350, height:550, borderBottomLeftRadius:10, borderBottomRightRadius:10,borderTopLeftRadius:10, borderTopRightRadius:10, alignItems:'center'}}>
           <View style = {{width:150,height:150,marginTop:15}}>
             <Image
                 source={require('../../../image/settingImage/profile(MDP).png')}
@@ -40,6 +40,10 @@ const Profile = (props) => {
                                keyboardType='text'
                                placeholder='Enter new email'
                     />
+
+            <TouchableOpacity style={{alignSelf:'flex-end',width:150,height:60,backgroundColor:'red', marginTop:30,borderRadius:10, justifyContent:'center'}}>
+              <Text style={{textAlign:'center',fontSize:20,color:'white',fontWeight:'bold'}}>Confirm</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

@@ -133,7 +133,7 @@ function HomeNavigator() {
       />
       <BottmTapNavigator.Screen
         name="Setting"
-        component={Setting}
+        component={SettingNavigator}
         options={{
           tabBarIcon: ({ color, size }) => {
             return <Feather name="settings" size={size} color={color} />;
@@ -204,7 +204,7 @@ function MainNavigator() {
       />
       <DrawerNavigator.Screen
         name="Setting"
-        component={Setting}
+        component={SettingNavigator}
         options={{
           title: "Setting",
           headerShown: true,
@@ -237,6 +237,19 @@ function MainNavigator() {
     );
   }
 
+  function SettingNavigator() {
+    return(
+      <StackSettingNavigator.Navigator
+        initialRouteName="Setting"
+        screenOptions={{ headerShown: false }}
+      >
+        <StackSettingNavigator.Screen name = "Setting" component={Setting}/>
+        <StackSettingNavigator.Screen name = "Profile" component={Profile}/>
+        <StackSettingNavigator.Screen name = "Reset" component={Resetpass}/>
+
+      </StackSettingNavigator.Navigator>
+    );
+  }
 if (user) {
   return (
     <NavigationContainer>
