@@ -3,8 +3,14 @@ import React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from "@react-navigation/drawer";
+
 import {
   SimpleLineIcons,
   MaterialCommunityIcons,
@@ -22,17 +28,21 @@ import ConfirmEmail from "../screens/Login/ConfirmEmail";
 import ResetPW from "../screens/Login/ResetPW";
 
 import Dashboard from "../screens/Dashboard";
-import Pattern from "../screens/Pattern";
+import Pattern from "../screens/Pattern/Pattern";
+import PatternDetail from "../screens/Pattern/PatternDetail";
 import Event from "../screens/Event";
 import Category from "../screens/Category";
 import CatagoryPage from "../../../screen/CatagoryPage";
-import Setting from "../screens/Setting";
 import addevent from "../screens/AddEvent";
 import EditEvent from "../../../screen/EditEvent";
+import Setting from "../screens/SettingPage/Setting";
 
 const DrawerNavigator = createDrawerNavigator();
 const BottmTapNavigator = createBottomTabNavigator();
+const StackPatternNavigator = createNativeStackNavigator();
 const StackLoginNavigator = createNativeStackNavigator();
+
+export default function Navigator() {
 
 function AddEventNavigator() {
   return (
@@ -42,6 +52,31 @@ function AddEventNavigator() {
       <StackLoginNavigator.Screen name="addEvent" component={addevent} />
       <StackLoginNavigator.Screen name="EditEvent" component={EditEvent} />
     </StackLoginNavigator.Navigator>
+  );
+}
+
+function PatternNavigator() {
+  return (
+    <StackPatternNavigator.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName="Pattern"
+    >
+      <StackPatternNavigator.Screen
+        name="Pattern"
+        component={Pattern}
+        options={{
+          title: "Pattern",
+        }}
+      />
+
+      <StackPatternNavigator.Screen
+        name="PatternDetail"
+        component={PatternDetail}
+        options={{
+          title: "PatternDetail",
+        }}
+      />
+    </StackPatternNavigator.Navigator>
   );
 }
 
@@ -79,7 +114,7 @@ function HomeNavigator() {
       />
       <BottmTapNavigator.Screen
         name="Pattern"
-        component={Pattern}
+        component={PatternNavigator}
         options={{
           tabBarIcon: ({ color, size }) => {
             return (
@@ -117,9 +152,9 @@ function MainNavigator() {
         component={HomeNavigator}
         options={{
           title: "Dashboard",
-          headerShown: true,
+          headerShown: false,
           headerStyle: {
-            height: 0,
+            height: 50,
           },
           drawerIcon: ({ focused, size }) => (
             <MaterialCommunityIcons
@@ -154,9 +189,9 @@ function MainNavigator() {
       />
       <DrawerNavigator.Screen
         name="Pattern"
-        component={Pattern}
+        component={PatternNavigator}
         options={{
-          title: "Dashboard",
+          title: "Pattern",
           headerShown: true,
           headerStyle: {
             height: 0,
@@ -167,7 +202,7 @@ function MainNavigator() {
         name="Setting"
         component={Setting}
         options={{
-          title: "Dashboard",
+          title: "Setting",
           headerShown: true,
           headerStyle: {
             height: 0,
@@ -198,7 +233,7 @@ function LoginNavigator() {
   );
 }
 
-export default function Navigator() {
+
   return (
     <NavigationContainer>
       <MainNavigator></MainNavigator>
