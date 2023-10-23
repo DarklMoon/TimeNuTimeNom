@@ -15,6 +15,7 @@ import InputField from "../../components/InputField";
 import ButtonComponent from "../../components/ButtonComponent";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/firebase";
+// import Snackbar from "react-native-snackbar";
 
 const Login = ({ navigation }) => {
   // const [username, setUsername] = useState('');
@@ -23,12 +24,18 @@ const Login = ({ navigation }) => {
   const {height} = useWindowDimensions();
 
   const signInPress = async () => {
-    if (email && password) {
-      try {
+    try {
+      if (email && password) {
         await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
-        console.log("Got Errors: ", err.message);
+      } else {
+        throw new Error("Email and Password are required");
       }
+    } catch (err) {
+      console.log("Got Errors: ", err.message);
+      // Snackbar.show({
+      //   text: err.message,
+      //   backgroundColor: "red",
+      // });
     }
   };
 

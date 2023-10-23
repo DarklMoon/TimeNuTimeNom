@@ -23,7 +23,11 @@ import CustomCheckBox from "../../components/CustomCheckBox"
 import CheckboxComponent from "../../components/CheckboxComponent";
 import MultiSelectList from "../../components/MultiSelectList";
 import ButtonComponent from "../../components/ButtonComponent";
-import { set } from "date-fns";
+import useAuth from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { async } from "@firebase/util";
+import { addDoc } from "firebase/firestore";
+import { patternRef } from "../../config/firebase";
 
 
 const Pattern = ({navigation}) => {
@@ -37,7 +41,8 @@ const Pattern = ({navigation}) => {
     const [fridayEvent, setFridayEvent] = useState([]);
     const [saturdayEvent, setSaturdayEvent] = useState([]);
     const [sundayEvent, setSundayEvent] = useState([]);
-    const [patternData, setPatternData] =useState({})
+    const [stateCreate, setStateCreate] = useState(false);
+    const { user } = useSelector(state=>state.user);
     const [pattern, setPattern] = useState(
       {
       id: "test",
@@ -46,6 +51,24 @@ const Pattern = ({navigation}) => {
       days: {},
     }
     );
+
+    // const { user } = useAuth();
+    // setUid(user.uid)
+    console.log("UID_: ", user.uid)
+
+    const handleCreatePattern = async ()=> {
+      if (pattern && stateCreate){
+        let doc = await addDoc(patternRef, {
+          title: pattern.title,
+          days: pattern.days,
+          userId: user.uid
+        })
+        if(doc && doc.id){
+          console.log("ADD DATA SUCCESSFUL")
+        }
+      }
+    }
+
 
     const updatePattern = ({ daysPattern, pattern }) => {
       return {
@@ -124,11 +147,14 @@ const Pattern = ({navigation}) => {
       }
 
       setPattern(updatedPattern);
+      setStateCreate(true);
     }
     
     useEffect(() => {
       console.log("useEffect_PATTERN:", pattern);
-    }, [pattern]);
+      handleCreatePattern()
+      setStateCreate(false);
+    }, [stateCreate]);
 
 
     const toggleModal = () => {
@@ -327,6 +353,7 @@ const Pattern = ({navigation}) => {
                         setUpEvent();
                         setModalVisible(false);
                         resetPattern()
+                        setStateCreate(true)
                         
                       }}
                     />

@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Circle, Rect, Path } from "react-native-svg";
-import InputField from "../../components/InputField";
-import ButtonComponent from "../../components/ButtonComponent";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/firebase";
+// import Snackbar from "react-native-snackbar";
+
+import InputField from "../../components/InputField";
+import ButtonComponent from "../../components/ButtonComponent";
 
 const Register = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -29,6 +31,11 @@ const Register = ({ navigation }) => {
       }catch(err){
         console.log("Got Errors: ", err.message)
       }
+    }else{
+      // Snackbar.show({
+      //   text: 'Email and Password are required',
+      //   backgroundColor: 'red'
+      // })
     }
   }
 

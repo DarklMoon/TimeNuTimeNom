@@ -47,6 +47,8 @@ const StackSettingNavigator = createNativeStackNavigator();
 export default function Navigator() {
   const { user } = useAuth();
 
+  
+
 
 function AddEventNavigator() {
   return (

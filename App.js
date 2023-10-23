@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet , Text, View } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { Calendar,Agenda } from 'react-native-calendars';
+import { Provider } from "react-redux";
+import { store } from "./assets/src/redux/store";
 
 import Navigator from "./assets/src/navigation/Navigator";
 import Dashboard from './assets/src/screens/Dashboard';
@@ -9,7 +11,9 @@ import Mynavigation from './screen/Mynavigation';
 
 export default function App() {
   return (
-    <Navigator/>
+    <Provider store={ store }>
+      <Navigator/>
+    </Provider>
     // <Dashboard/>
     // <Mynavigation></Mynavigation>
   )
