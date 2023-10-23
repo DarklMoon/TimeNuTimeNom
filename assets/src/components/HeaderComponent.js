@@ -3,63 +3,67 @@ import { Button, StatusBar, StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons"; 
 
-const HeaderComponent = ({navigation}) => {
+const HeaderComponent = ({ navigation, iconLeft }) => {
+  const [isModalVisible, setModalVisible] = useState(false);
+  console.log(iconLeft)
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
-    const [isModalVisible, setModalVisible] = useState(false);
-    const toggleModal = () => {
-      setModalVisible(!isModalVisible);
-    };
+  return (
+    <View style={{ backgroundColor: "#2FBCBC" }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", padding:5 }}>
+        <View style={{ marginLeft: 10, marginTop: 5, flex: 1 }}>
+          <Ionicons
+            name={iconLeft ? iconLeft : "ios-menu"}
+            size={40}
+            color="black"
+            onPress={() => {
+              if (iconLeft === "arrow-back") {
+                navigation.goBack();
+              } else {
+                navigation.openDrawer();
+              }
+            }}
+          />
+        </View>
+        <View style={{ flex: 2, justifyContent: "center", marginTop: 5 }}>
+          <Text style={{ fontSize: 20, fontWeight: "600" }}>TimeNuTimeNom</Text>
+        </View>
+        <View style={{ flex: 0.35, marginTop: 10 }}>
+          <Ionicons
+            name={isModalVisible ? "notifications" : "notifications-outline"}
+            size={35}
+            color={isModalVisible ? "#FD6B68" : "black"}
+            onPress={toggleModal}
+          />
+        </View>
+      </View>
 
-    return (
-      <View>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{ marginLeft: 10, marginTop: 5, flex: 1 }}>
-            <Ionicons
-              name="ios-menu"
-              size={40}
-              color="black"
-              onPress={() => navigation.openDrawer()}
-            />
-          </View>
-          <View style={{ flex: 2, justifyContent: "center", marginTop: 5 }}>
-            <Text style={{ fontSize: 20, fontWeight: "600" }}>
-              TimeNuTimeNom
-            </Text>
-          </View>
-          <View style={{ flex: 0.35, marginTop: 10 }}>
-            <Ionicons
-              name={isModalVisible ? "notifications" : "notifications-outline"}
-              size={35}
-              color={isModalVisible ? "#FD6B68" : "black"}
-              onPress={toggleModal}
-            />
+      <Modal
+        onBackdropPress={() => setModalVisible(false)}
+        onBackButtonPress={() => setModalVisible(false)}
+        isVisible={isModalVisible}
+        swipeDirection="down"
+        onSwipeComplete={toggleModal}
+        animationIn="bounceInUp"
+        animationOut="bounceOutDown"
+        animationInTiming={900}
+        animationOutTiming={500}
+        backdropTransitionInTiming={1000}
+        backdropTransitionOutTiming={500}
+        style={styles.modal}
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.center}>
+            <View style={styles.barIcon} />
+            <Text style={styles.text}>Welcome To My Bottom Sheet</Text>
           </View>
         </View>
-
-        <Modal
-          onBackdropPress={() => setModalVisible(false)}
-          onBackButtonPress={() => setModalVisible(false)}
-          isVisible={isModalVisible}
-          swipeDirection="down"
-          onSwipeComplete={toggleModal}
-          animationIn="bounceInUp"
-          animationOut="bounceOutDown"
-          animationInTiming={900}
-          animationOutTiming={500}
-          backdropTransitionInTiming={1000}
-          backdropTransitionOutTiming={500}
-          style={styles.modal}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.center}>
-              <View style={styles.barIcon} />
-              <Text style={styles.text}>Welcome To My Bottom Sheet</Text>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    );
-}
+      </Modal>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   flexView: {
@@ -70,20 +74,20 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     margin: 0,
   },
-  modalContent: {
-    backgroundColor: "#161616",
-    paddingTop: 12,
-    paddingHorizontal: 12,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    minHeight: 400,
-    paddingBottom: 20,
-  },
-  center: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    modalContent: {
+      backgroundColor: "#161616",
+      paddingTop: 12,
+      paddingHorizontal: 12,
+      borderTopRightRadius: 20,
+      borderTopLeftRadius: 20,
+      minHeight: 400,
+      paddingBottom: 20,
+    },
+    center: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
   barIcon: {
     width: 60,
     height: 5,

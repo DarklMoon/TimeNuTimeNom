@@ -4,6 +4,23 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, StatusBar}
 import { LinearGradient } from "expo-linear-gradient";
 import HeaderComponent from "../../components/HeaderComponent";
 
+
+const Item = ({ item, onPress, backgroundColor, textColor, days }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.item, { backgroundColor }]}
+  >
+    <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+    <View style={{ flexDirection: "row", marginTop: 10 }}>
+      {days.map((str, index) => (
+        <Text key={index} style={[styles.days, { color: textColor }]}>
+          {index === days.length - 1 ? str + ". " : str + ". "}
+        </Text>
+      ))}
+    </View>
+  </TouchableOpacity>
+);
+
 const Setting = (props) => {
   return (
     <LinearGradient
