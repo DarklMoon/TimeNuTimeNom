@@ -15,7 +15,7 @@ import { LinearGradient } from "expo-linear-gradient"
 
 import Modal from "react-native-modal";
 
-import { DATA } from "../../data/PatternData"
+import { PATTERN_DATA } from "../../data/PatternData"
 import HeaderComponent from "../../components/HeaderComponent";
 import CardPattern from "../../components/CardPattern";
 import InputField from "../../components/InputField";
@@ -23,12 +23,21 @@ import CustomCheckBox from "../../components/CustomCheckBox"
 import CheckboxComponent from "../../components/CheckboxComponent";
 import MultiSelectList from "../../components/MultiSelectList";
 import ButtonComponent from "../../components/ButtonComponent";
+import { set } from "date-fns";
 
 
 const Pattern = ({navigation}) => {
     const [selectedId, setSelectedId] = useState();
     const [patternTitle, setPatternTitle] = useState("");
     const[isModalVisible, setModalVisible] = useState(false);
+    const [mondayEvent, setMondayEvent] = useState([]);
+    const [tuesdayEvent, setTuesdayEvent] = useState([]);
+    const [wednesdayEvent, setWednesdayEvent] = useState([]);
+    const [thursdayEvent, setThursdayEvent] = useState([]);
+    const [fridayEvent, setFridayEvent] = useState([]);
+    const [saturdayEvent, setSaturdayEvent] = useState([]);
+    const [sundayEvent, setSundayEvent] = useState([]);
+    const [patternData, setPatternData] =useState([])
 
     const toggleModal = () => {
       setModalVisible(!isModalVisible);
@@ -59,9 +68,10 @@ const Pattern = ({navigation}) => {
       );
     };
 
+
     return (
       <LinearGradient
-        colors={["#2FBCBC", "#FFFFF"]}
+        colors={["#2FBCBC", "#FFFFFF"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.container}
@@ -88,7 +98,7 @@ const Pattern = ({navigation}) => {
               {/* End Header In Box */}
               <SafeAreaView style={styles.flatContainer}>
                 <FlatList
-                  data={DATA}
+                  data={PATTERN_DATA}
                   renderItem={renderItem}
                   keyExtractor={(item) => item.id}
                   extraData={selectedId}
@@ -171,13 +181,34 @@ const Pattern = ({navigation}) => {
                   <View style={{ marginLeft: 15, marginBottom: 10 }}>
                     <Text style={{ fontWeight: "bold" }}>Select day</Text>
                   </View>
-                  <CheckboxComponent label={"Monday"} />
-                  <CheckboxComponent label={"Tuesday"} />
-                  <CheckboxComponent label={"Wednesday"} />
-                  <CheckboxComponent label={"Thursday"} />
-                  <CheckboxComponent label={"Friday"} />
-                  <CheckboxComponent label={"Saturday"} />
-                  <CheckboxComponent label={"Sunday"} />
+                  <CheckboxComponent
+                    label={"Monday"}
+                    setData={setMondayEvent}
+                  />
+                  <CheckboxComponent
+                    label={"Tuesday"}
+                    setData={setTuesdayEvent}
+                  />
+                  <CheckboxComponent
+                    label={"Wednesday"}
+                    setData={setWednesdayEvent}
+                  />
+                  <CheckboxComponent
+                    label={"Thursday"}
+                    setData={setThursdayEvent}
+                  />
+                  <CheckboxComponent
+                    label={"Friday"}
+                    setData={setFridayEvent}
+                  />
+                  <CheckboxComponent
+                    label={"Saturday"}
+                    setData={setSaturdayEvent}
+                  />
+                  <CheckboxComponent
+                    label={"Sunday"}
+                    setData={setSundayEvent}
+                  />
 
                   <View
                     style={{
@@ -191,7 +222,58 @@ const Pattern = ({navigation}) => {
                     <ButtonComponent
                       text={"Add Pattern"}
                       width={"40%"}
-                      // onPress={}
+                      onPress={()=>{
+                        // var [pattern, setPattern] = useState({
+                        //   id: "abc",
+                        //   title: { patternTitle },
+                        //   bgColor: "#FFFFFF",
+                        //   days: {}
+                        // });
+                      
+                        // if (mondayEvent.length != 0) {
+                        //   console.log("Pattern Monday Ex.:", mondayPattern);
+                        //   var mondayPattern = {Mon: mondayEvent}
+
+                        //   console.log(pattern)
+                        // }
+                        // if(tuesdayEvent.length != 0){
+                        //   console.log("Pattern Tuesday Ex.:", tuesdayPattern);
+                        //   var tuesdayPattern = { Tue: tuesdayEvent };
+                          
+                        //   console.log(pattern);
+                        // }
+                        // if(wednesdayEvent.length != 0){
+                        //   console.log("Pattern Wednesday Ex.:", wednesdayPattern);
+                        //   var wednesdayPattern = { Wed: wednesdayEvent };
+                        // }
+                        // if(thursdayEvent.length != 0){
+                        //   console.log("Pattern Thursday Ex.:", thursdayPattern);
+                        //   var thursdayPattern = { Thu: thursdayEvent };
+                        // }
+                        // if(fridayEvent.length != 0){
+                        //   console.log("Pattern Friday Ex.:", fridayPattern);
+                        //   var fridayPattern = { Thu: fridayEvent };
+                        // }
+                        // if(saturdayEvent.length != 0){
+                        //   console.log("Pattern Saturday Ex.:", saturdayPattern);
+                        //   var saturdayPattern = { Thu: saturdayEvent };
+                        // }
+                        // if (sundayEvent.length != 0) {
+                        //   console.log("Pattern Sunday Ex.:", sundayPattern);
+                        //   var sundayPattern = { Thu: sundayEvent };
+                        // }
+
+                        // const updatedPattern = {
+                        //   ...pattern,
+                        //   days: {
+                        //     ...pattern.days,
+                        //     ...monday,
+                        //     ...wednesday,
+                        //   },
+                        // };
+                        // setPattern(updatedPattern);
+
+                      }}
                     />
                     <ButtonComponent
                       text={"Cancel"}

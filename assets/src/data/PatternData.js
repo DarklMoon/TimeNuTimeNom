@@ -1,4 +1,4 @@
-export const DATA = [
+export const PATTERN_DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
     title: "Workout Pattern",
@@ -7,7 +7,7 @@ export const DATA = [
       Mon: {
         event00: {
           title: "Running Time",
-          catogories: {
+          categories: {
             WorkOut: "#FFA607",
           },
           place: "",
@@ -18,7 +18,7 @@ export const DATA = [
         },
         event01: {
           title: "Play Football",
-          catogories: {
+          categories: {
             WorkOut: "#FFA607",
             Sport: "#41D5E0",
           },
@@ -32,7 +32,7 @@ export const DATA = [
       Wed: {
         event02: {
           title: "Lift Weights",
-          catogories: {
+          categories: {
             WorkOut: "#FFA607",
           },
           place: "",
@@ -45,7 +45,7 @@ export const DATA = [
       Fri: {
         event03: {
           title: "Sit up",
-          catogories: [],
+          categories: [],
           place: "",
           startTime: "16:00",
           endTime: "",
@@ -63,7 +63,7 @@ export const DATA = [
       Sat: {
         event04: {
           title: "Event-04",
-          catogories: [],
+          categories: [],
           place: "",
           startTime: "07:30",
           endTime: "",
@@ -74,7 +74,7 @@ export const DATA = [
       Sun: {
         event05: {
           title: "Event-05",
-          catogories: [],
+          categories: [],
           place: "",
           startTime: "10:00",
           endTime: "",
@@ -92,7 +92,7 @@ export const DATA = [
       Tue: {
         event06: {
           title: "Event-06",
-          catogories: [],
+          categories: [],
           place: "",
           startTime: "22:00",
           endTime: "",

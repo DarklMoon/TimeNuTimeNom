@@ -12,12 +12,11 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { DATA } from "../../data/PatternData";
+// import { PATTERN_DATA } from "../../data/PatternData";
 import HeaderComponent from "../../components/HeaderComponent";
 import ButtonComponent from "../../components/ButtonComponent";
 import CardPattern from "../../components/CardPattern";
 import CardEvent from "../../components/CardEvent";
-
 
 const PatternDetail = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState();
