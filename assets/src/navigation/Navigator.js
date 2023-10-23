@@ -20,6 +20,8 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 
+import useAuth from "../hooks/useAuth";
+
 import Loading from "../screens/Login/Loading";
 import Login from "../screens/Login/Login";
 import Register from "../screens/Login/Register";
@@ -43,7 +45,9 @@ const StackPatternNavigator = createNativeStackNavigator();
 const StackLoginNavigator = createNativeStackNavigator();
 
 export default function Navigator() {
+  const { user } = useAuth();
 
+  
 function AddEventNavigator() {
   return (
     <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
@@ -233,7 +237,7 @@ function LoginNavigator() {
   );
 }
 
-
+if (user) {
   return (
     <NavigationContainer>
       <MainNavigator></MainNavigator>
@@ -241,4 +245,14 @@ function LoginNavigator() {
       {/* <LoginNavigator></LoginNavigator> */}
     </NavigationContainer>
   );
+} else {
+  return (
+    <NavigationContainer>
+      {/* <MainNavigator></MainNavigator> */}
+      {/* <PatternNavigator></PatternNavigator> */}
+      <LoginNavigator></LoginNavigator>
+    </NavigationContainer>
+  );
+}
+
 }

@@ -68,75 +68,84 @@ const PatternDetail = ({ navigation, route }) => {
     //   end={{ x: 1, y: 1 }}
     //   style={styles.container}
     // >
-      <View style={[styles.container]}>
-        <StatusBar hidden={true} />
-        <View style={styles.container}>
-          <HeaderComponent navigation={navigation} iconLeft={"arrow-back"} />
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.boxBackground}>
-              <View style={{ position: "relative" }}>
-                <Text
-                  style={{
-                    fontSize: 30,
-                    fontWeight: "bold",
-                    paddingTop: 30,
-                    paddingLeft: 20,
-                    paddingBottom: 10,
-                  }}
-                >
-                  Pattern
-                </Text>
-                <View style={styles.line}></View>
-              </View>
-              {/* End Header In Box */}
-              <CardPattern
-                item={data}
-                backgroundColor={data.bgColor}
-                textColor={"white"}
-                days={arrayOfDays}
-              />
-              <View style={{ position: "relative" }}>
-                <Text
-                  style={{
-                    fontSize: 30,
-                    fontWeight: "bold",
-                    paddingTop: 30,
-                    paddingLeft: 20,
-                    paddingBottom: 10,
-                  }}
-                >
-                  Events
-                </Text>
-                <View style={styles.line}></View>
-              </View>
-
-              <View>{renderEvents()}</View>
-
-              <View
+    <View style={[styles.container]}>
+      <StatusBar hidden={true} />
+      <View style={styles.container}>
+        <HeaderComponent navigation={navigation} iconLeft={"arrow-back"} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.boxBackground}>
+            <View style={{ position: "relative" }}>
+              <Text
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  marginTop: 30,
-                  paddingBottom: 30,
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  paddingTop: 30,
+                  paddingLeft: 20,
+                  paddingBottom: 10,
                 }}
               >
-                <ButtonComponent
-                  text={"Use Pattern"}
-                  width={"30%"}
-                  // onPress={}
-                />
-                <ButtonComponent
-                  text={"Edit"}
-                  width={"30%"}
-                  type={"Cancel"}
-                  // onPress={}
-                />
-              </View>
+                Pattern
+              </Text>
+              <View style={styles.line}></View>
             </View>
-          </ScrollView>
-        </View>
+            {/* End Header In Box */}
+            <CardPattern
+              item={data}
+              backgroundColor={data.bgColor}
+              textColor={"white"}
+              days={arrayOfDays}
+            />
+            <View style={{ position: "relative" }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  paddingTop: 30,
+                  paddingLeft: 20,
+                  paddingBottom: 10,
+                }}
+              >
+                Events
+              </Text>
+              <View style={styles.line}></View>
+            </View>
+
+            <View>{renderEvents()}</View>
+
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-evenly",
+                marginTop: 30,
+                paddingBottom: 10,
+              }}
+            >
+              <ButtonComponent
+                text={"Use Pattern"}
+                width={"30%"}
+                // onPress={}
+              />
+              <ButtonComponent
+                text={"Edit"}
+                width={"30%"}
+                type={"Cancel"}
+                // onPress={}
+              />
+            </View>
+            <View style={{alignItems:"center", padding:10, paddingBottom:20}}>
+            <ButtonComponent
+              text={"Delete"}
+              width={"40%"}
+              type={"Delete"}
+              // onPress={}
+            />
+
+            </View>
+          </View>
+        </ScrollView>
       </View>
+    </View>
     // </LinearGradient>
   );
 };

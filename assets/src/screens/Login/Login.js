@@ -13,15 +13,29 @@ import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path} from "react-native-svg";
 import InputField from "../../components/InputField";
 import ButtonComponent from "../../components/ButtonComponent";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 const Login = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+  // const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {height} = useWindowDimensions();
-  const signInPress = () =>{
-      console.warn('Sin in');
-      navigation.navigate('Main');
-  }
+
+  const signInPress = async () => {
+    if (email && password) {
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        console.log("Got Errors: ", err.message);
+      }
+    }
+  };
+
+  // const signInPress = () =>{
+  //     console.warn('Sin in');
+  //     navigation.navigate('Main');
+  // }
 
   const recoveryPWNavigator = () => {
       navigation.navigate('RecoveryPW');
@@ -36,11 +50,11 @@ const Login = ({ navigation }) => {
       colors={["#2FBCBC", "#D8FFF8"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={{height: "100%"}}
+      style={{ height: "100%" }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <View style={[styles.boxBackground, {marginTop: height * 0.2}]}>
+          <View style={[styles.boxBackground, { marginTop: height * 0.2 }]}>
             <View style={styles.img}>
               <Image
                 style={{ width: 80, height: 80, resizeMode: "contain" }}
@@ -88,12 +102,12 @@ const Login = ({ navigation }) => {
                     fontWeight: "700",
                   }}
                 >
-                  Username
+                  Email
                 </Text>
                 <InputField
-                  placeholder={"Enter username"}
-                  value={username}
-                  setValue={setUsername}
+                  placeholder={"Enter email"}
+                  value={email}
+                  setValue={setEmail}
                 />
               </View>
 
@@ -136,7 +150,11 @@ const Login = ({ navigation }) => {
               <View
                 style={{ width: "100%", alignItems: "center", marginTop: 50 }}
               >
-                <ButtonComponent text={"Sign In"} width={"80%"} onPress={signInPress} />
+                <ButtonComponent
+                  text={"Sign In"}
+                  width={"80%"}
+                  onPress={signInPress}
+                />
               </View>
 
               <Text style={{ color: "#AAAAAA", marginTop: 10 }}>
@@ -152,7 +170,7 @@ const Login = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
-</LinearGradient>
+    </LinearGradient>
   );
 };
 

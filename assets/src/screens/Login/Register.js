@@ -12,6 +12,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Circle, Rect, Path } from "react-native-svg";
 import InputField from "../../components/InputField";
 import ButtonComponent from "../../components/ButtonComponent";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 const Register = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -20,8 +22,14 @@ const Register = ({ navigation }) => {
   const [passwordRepeat, setPasswordRepeat] = useState("");
   const screenHeight = Dimensions.get("window").height;
 
-  const signUpPress = () => {
-      console.warn("Sin up");
+  const signUpPress = async () => {
+    if(email && (password === passwordRepeat)){
+      try{
+         await createUserWithEmailAndPassword(auth, email, password)
+      }catch(err){
+        console.log("Got Errors: ", err.message)
+      }
+    }
   }
 
   const loginNavigator = () => {
@@ -174,7 +182,7 @@ const Register = ({ navigation }) => {
               <View
                 style={{ width: "100%", alignItems: "center", marginTop: 30 }}
               >
-                <ButtonComponent text={"Sign In"} onPress={signUpPress} />
+                <ButtonComponent width={"50%"} text={"Sign Up"} onPress={signUpPress} />
               </View>
               <Text style={{ color: "#AAAAAA", marginTop: 20 }}>
                 I've already an account.

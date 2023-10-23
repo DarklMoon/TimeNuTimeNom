@@ -3,6 +3,8 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, StatusBar} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import HeaderComponent from "../../components/HeaderComponent";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 
 const Item = ({ item, onPress, backgroundColor, textColor, days }) => (
@@ -20,6 +22,10 @@ const Item = ({ item, onPress, backgroundColor, textColor, days }) => (
     </View>
   </TouchableOpacity>
 );
+
+const handleLogout = async ()=>{
+  await signOut(auth);
+}
 
 const Setting = (props) => {
   return (
@@ -246,6 +252,7 @@ const Setting = (props) => {
                       flexDirection: "row",
                       marginTop: 10,
                     }}
+                    onPress={handleLogout}
                   >
                     {/*รูป*/}
                     <View style={{ width: 60, height: "100%" }}>
