@@ -89,18 +89,38 @@ const Pattern = ({navigation}) => {
       }
       if (wednesdayEvent.length != 0) {
         var wednesdayPattern = { Wed: wednesdayEvent };
+        updatedPattern = updatePattern({
+          daysPattern: wednesdayPattern,
+          pattern: updatedPattern,
+        });
       }
       if (thursdayEvent.length != 0) {
         var thursdayPattern = { Thu: thursdayEvent };
+        updatedPattern = updatePattern({
+          daysPattern: thursdayPattern,
+          pattern: updatedPattern,
+        });
       }
       if (fridayEvent.length != 0) {
         var fridayPattern = { Thu: fridayEvent };
+        updatedPattern = updatePattern({
+          daysPattern: fridayPattern,
+          pattern: updatedPattern,
+        });
       }
       if (saturdayEvent.length != 0) {
         var saturdayPattern = { Thu: saturdayEvent };
+        updatedPattern = updatePattern({
+          daysPattern: saturdayPattern,
+          pattern: updatedPattern,
+        });
       }
       if (sundayEvent.length != 0) {
         var sundayPattern = { Thu: sundayEvent };
+        updatedPattern = updatePattern({
+          daysPattern: sundayPattern,
+          pattern: updatedPattern,
+        });
       }
 
       setPattern(updatedPattern);
