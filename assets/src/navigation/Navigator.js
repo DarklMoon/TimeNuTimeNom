@@ -31,7 +31,10 @@ import Pattern from "../screens/Pattern/Pattern";
 import PatternDetail from "../screens/Pattern/PatternDetail";
 import Event from "../screens/Event";
 import Category from "../screens/Category";
+
 import Setting from "../screens/SettingPage/Setting";
+import Profile from "../screens/SettingPage/Profile";
+import Resetpass from "../screens/SettingPage/Resetpass";
 
 // import Test from "../components/Test";
 // import Test2 from "../components/Test2";
@@ -39,6 +42,7 @@ const DrawerNavigator = createDrawerNavigator();
 const BottmTapNavigator = createBottomTabNavigator();
 const StackPatternNavigator = createNativeStackNavigator();
 const StackLoginNavigator = createNativeStackNavigator();
+const StackSettingNavigator = createNativeStackNavigator();
 
 export default function Navigator() {
 
@@ -221,6 +225,19 @@ export default function Navigator() {
         <StackLoginNavigator.Screen name="Register" component={Register} />
         <StackLoginNavigator.Screen name="Main" component={MainNavigator} />
       </StackLoginNavigator.Navigator>
+    );
+  }
+
+  function SettingNavigator(){
+    return(
+      <StackSettingNavigator.Navigator
+        initialRouteName="Setting"
+        screenOptions={{ headerShown: false }}
+      >
+        <StackSettingNavigator.Screen name="Profile" component={Profile} />
+        <StackSettingNavigator.Screen name="ResetPass" component={Resetpass}/>
+
+      </StackSettingNavigator.Navigator>
     );
   }
 

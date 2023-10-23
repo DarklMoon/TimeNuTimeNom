@@ -14,7 +14,7 @@ const Profile = (props) => {
         <View style ={{backgroundColor:'white',  width:350, height:450, borderBottomLeftRadius:10, borderBottomRightRadius:10,borderTopLeftRadius:10, borderTopRightRadius:10, alignItems:'center'}}>
           <View style = {{width:150,height:150,marginTop:15}}>
             <Image
-                source={require('./profile(MDP).png')}
+                source={require('../../../image/settingImage/profile(MDP).png')}
                 style= {{flex:1 , width: undefined, height: undefined}}
             />
           </View>
@@ -22,7 +22,7 @@ const Profile = (props) => {
           <TouchableOpacity style={{width:'100%', height:60, alignItems:'flex-end'}}>
             <View style = {{width:60,height:'100%', backgroundColor:'#D9D9D9', marginRight:30, borderRadius:30}}>
               <Image
-                  source={require('./upload(MDP).png')}
+                  source={require('../../../image/settingImage/upload(MDP).png')}
                   style= {{flex:1 , width: undefined, height: undefined}}
               />
             </View>
