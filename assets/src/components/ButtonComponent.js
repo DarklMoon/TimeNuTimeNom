@@ -28,5 +28,8 @@ const styles = StyleSheet.create({
   typeCancel: {
     backgroundColor: "#CAC2C1",
   },
+  typeDelete: {
+    backgroundColor: "red",
+  },
 });
 export default ButtonComponent;

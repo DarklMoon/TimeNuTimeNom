@@ -1,4 +1,11 @@
-import { Button, StyleSheet, Text, View, ScrollView, StatusBar} from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  StatusBar,
+} from "react-native";
 import { TimeDatePicker, Modes } from "react-native-time-date-picker";
 
 import React, { useState, useEffect } from "react";
@@ -7,17 +14,16 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import HeaderComponent from "../components/HeaderComponent";
 
-
 const Dashboard = ({ navigation }) => {
   const [selected, setSelected] = useState("");
   const [selectedDate, setSelectedDate] = useState([""]);
 
- useEffect(() => {
-   // This effect runs once when the component mounts
-   const currentDay = new Date();
-   const currentDayS = currentDay.toISOString().slice(0, 10);
-   setSelected(currentDayS);
- }, []);
+  useEffect(() => {
+    // This effect runs once when the component mounts
+    const currentDay = new Date();
+    const currentDayS = currentDay.toISOString().slice(0, 10);
+    setSelected(currentDayS);
+  }, []);
 
   const rawSelectdDay = new Date(selected);
   console.log("SELECTED:", selected);
@@ -35,7 +41,6 @@ const Dashboard = ({ navigation }) => {
   const dayName = daysOfWeek[dayNumber];
   console.log("CONVERT:", dayName);
 
-
   return (
     <LinearGradient
       colors={["#2FBCBC", "#D8FFF8"]}
@@ -43,9 +48,7 @@ const Dashboard = ({ navigation }) => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <StatusBar
-        hidden={true}
-      />
+      <StatusBar hidden={false} />
       <View style={styles.container}>
         <HeaderComponent navigation={navigation} />
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -66,7 +69,7 @@ const Dashboard = ({ navigation }) => {
                 {selected}
               </Text>
               <View style={styles.line}></View>
-            </View>
+          </View>
             <View style={{ flex: 2 }}>
               <Calendar
                 style={styles.carlender}
@@ -194,7 +197,6 @@ const Dashboard = ({ navigation }) => {
     </LinearGradient>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -227,4 +229,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Dashboard
+export default Dashboard;
