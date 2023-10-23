@@ -48,7 +48,7 @@ const Dashboard = ({ navigation }) => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <StatusBar hidden={true} />
+      <StatusBar hidden={false} />
       <View style={styles.container}>
         <HeaderComponent navigation={navigation} />
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -69,7 +69,7 @@ const Dashboard = ({ navigation }) => {
                 {selected}
               </Text>
               <View style={styles.line}></View>
-            </View>
+          </View>
             <View style={{ flex: 2 }}>
               <Calendar
                 style={styles.carlender}

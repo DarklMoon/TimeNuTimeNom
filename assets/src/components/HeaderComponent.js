@@ -11,8 +11,18 @@ const HeaderComponent = ({ navigation, iconLeft }) => {
   };
 
   return (
-    <View style={{ backgroundColor: "#2FBCBC" }}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", padding:5 }}>
+    <View
+      style={{
+        backgroundColor: "#2FBCBC",
+      }}
+      >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 5,
+        }}
+      >
         <View style={{ marginLeft: 10, marginTop: 5, flex: 1 }}>
           <Ionicons
             name={iconLeft ? iconLeft : "ios-menu"}

@@ -7,8 +7,8 @@ import { MultipleSelectList } from "react-native-dropdown-select-list";
 const MultiSelectList = ({ info, day, setData }) => {
   const [selected, setSelected] = React.useState([]);
   const dayName = day.slice(0, 3);
-  console.log("INFO:", info);
-  console.log("DAY:", dayName);
+  // console.log("INFO:", info);
+  // console.log("DAY:", dayName);
 
   return (
     <View>

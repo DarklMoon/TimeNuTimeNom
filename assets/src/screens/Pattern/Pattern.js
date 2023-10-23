@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { Button,
   StyleSheet,
   Text,
@@ -37,7 +37,79 @@ const Pattern = ({navigation}) => {
     const [fridayEvent, setFridayEvent] = useState([]);
     const [saturdayEvent, setSaturdayEvent] = useState([]);
     const [sundayEvent, setSundayEvent] = useState([]);
-    const [patternData, setPatternData] =useState([])
+    const [patternData, setPatternData] =useState({})
+    const [pattern, setPattern] = useState(
+      {
+      id: "test",
+      title: "",
+      bgColor: "#FFFFFF",
+      days: {},
+    }
+    );
+
+    const updatePattern = ({ daysPattern, pattern }) => {
+      return {
+        ...pattern,
+        title: patternTitle,
+        days: {
+          ...pattern.days,
+          ...daysPattern,
+        },
+      };
+    };
+
+    const resetPattern = () => {
+      setPatternTitle("");
+      setMondayEvent([]);
+      setTuesdayEvent([]);
+      setWednesdayEvent([]);
+      setThursdayEvent([]);
+      setFridayEvent([]);
+      setSaturdayEvent([]);
+      setSundayEvent([]);
+    }
+
+    const setUpEvent = () => {
+      let updatedPattern = { ...pattern };
+
+      if (mondayEvent.length !== 0) {
+        var mondayPattern = { Mon: mondayEvent };
+        updatedPattern = updatePattern({
+          daysPattern: mondayPattern,
+          pattern: updatedPattern,
+        });
+      }
+
+      if (tuesdayEvent.length !== 0) {
+        var tuesdayPattern = { Tue: tuesdayEvent };
+        updatedPattern = updatePattern({
+          daysPattern: tuesdayPattern,
+          pattern: updatedPattern,
+        });
+      }
+      if (wednesdayEvent.length != 0) {
+        var wednesdayPattern = { Wed: wednesdayEvent };
+      }
+      if (thursdayEvent.length != 0) {
+        var thursdayPattern = { Thu: thursdayEvent };
+      }
+      if (fridayEvent.length != 0) {
+        var fridayPattern = { Thu: fridayEvent };
+      }
+      if (saturdayEvent.length != 0) {
+        var saturdayPattern = { Thu: saturdayEvent };
+      }
+      if (sundayEvent.length != 0) {
+        var sundayPattern = { Thu: sundayEvent };
+      }
+
+      setPattern(updatedPattern);
+    }
+    
+    useEffect(() => {
+      console.log("useEffect_PATTERN:", pattern);
+    }, [pattern]);
+
 
     const toggleModal = () => {
       setModalVisible(!isModalVisible);
@@ -47,7 +119,7 @@ const Pattern = ({navigation}) => {
       // const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
       const color = item.id === selectedId ? "black" : "white";
       const arrayOfDays = Object.keys(item.days)
-      console.log("Item:", item)
+      // console.log("Item:", item)
       
       return (
         <CardPattern
@@ -68,6 +140,7 @@ const Pattern = ({navigation}) => {
       );
     };
 
+    
 
     return (
       <LinearGradient
@@ -106,7 +179,15 @@ const Pattern = ({navigation}) => {
               </SafeAreaView>
 
               <View style={styles.img}>
-                <TouchableOpacity onPress={toggleModal}>
+                <TouchableOpacity onPress={()=>{
+                  toggleModal();
+                  setPattern({
+                    id: "test",
+                    title: "",
+                    bgColor: "#FFFFFF",
+                    days: {},
+                  });
+                }}>
                   <Image
                     style={{ width: 50, height: 50, resizeMode: "contain" }}
                     source={require("../../../image/IconAdded.png")}
@@ -140,7 +221,7 @@ const Pattern = ({navigation}) => {
                   style={{ alignSelf: "flex-end" }}
                   onPress={() => {
                     setModalVisible(false);
-                    setPatternTitle("");
+                    resetPattern();
                   }}
                 />
                 <View style={styles.center}>
@@ -223,56 +304,10 @@ const Pattern = ({navigation}) => {
                       text={"Add Pattern"}
                       width={"40%"}
                       onPress={()=>{
-                        // var [pattern, setPattern] = useState({
-                        //   id: "abc",
-                        //   title: { patternTitle },
-                        //   bgColor: "#FFFFFF",
-                        //   days: {}
-                        // });
-                      
-                        // if (mondayEvent.length != 0) {
-                        //   console.log("Pattern Monday Ex.:", mondayPattern);
-                        //   var mondayPattern = {Mon: mondayEvent}
-
-                        //   console.log(pattern)
-                        // }
-                        // if(tuesdayEvent.length != 0){
-                        //   console.log("Pattern Tuesday Ex.:", tuesdayPattern);
-                        //   var tuesdayPattern = { Tue: tuesdayEvent };
-                          
-                        //   console.log(pattern);
-                        // }
-                        // if(wednesdayEvent.length != 0){
-                        //   console.log("Pattern Wednesday Ex.:", wednesdayPattern);
-                        //   var wednesdayPattern = { Wed: wednesdayEvent };
-                        // }
-                        // if(thursdayEvent.length != 0){
-                        //   console.log("Pattern Thursday Ex.:", thursdayPattern);
-                        //   var thursdayPattern = { Thu: thursdayEvent };
-                        // }
-                        // if(fridayEvent.length != 0){
-                        //   console.log("Pattern Friday Ex.:", fridayPattern);
-                        //   var fridayPattern = { Thu: fridayEvent };
-                        // }
-                        // if(saturdayEvent.length != 0){
-                        //   console.log("Pattern Saturday Ex.:", saturdayPattern);
-                        //   var saturdayPattern = { Thu: saturdayEvent };
-                        // }
-                        // if (sundayEvent.length != 0) {
-                        //   console.log("Pattern Sunday Ex.:", sundayPattern);
-                        //   var sundayPattern = { Thu: sundayEvent };
-                        // }
-
-                        // const updatedPattern = {
-                        //   ...pattern,
-                        //   days: {
-                        //     ...pattern.days,
-                        //     ...monday,
-                        //     ...wednesday,
-                        //   },
-                        // };
-                        // setPattern(updatedPattern);
-
+                        setUpEvent();
+                        setModalVisible(false);
+                        resetPattern()
+                        
                       }}
                     />
                     <ButtonComponent
@@ -282,6 +317,7 @@ const Pattern = ({navigation}) => {
                       onPress={() => {
                         setModalVisible(false);
                         setPatternTitle("");
+                        resetPattern();
                       }}
                     />
                   </View>

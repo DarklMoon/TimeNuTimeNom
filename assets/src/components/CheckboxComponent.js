@@ -9,7 +9,7 @@ import { EVENT_DATA, EVENT_FOR_MUTI } from "../data/EventData";
 export default function CheckboxComponent({label, setData}) {
   const [isChecked, setChecked] = useState(false);
   const [showComponent, setShowComponent] = useState(false)
-  console.log(EVENT_FOR_MUTI);
+  // console.log(EVENT_FOR_MUTI);
   
   return (
     <View style={styles.container}>
