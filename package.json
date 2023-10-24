@@ -12,6 +12,7 @@
     "@freakycoder/react-native-bounceable": "^1.0.3",
     "@react-native-community/checkbox": "^0.5.16",
     "@react-native-community/clipboard": "^1.5.1",
+    "@react-native-firebase/firestore": "^18.5.0",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/native": "^6.1.7",

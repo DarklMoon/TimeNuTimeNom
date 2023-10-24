@@ -7,18 +7,27 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   ScrollView,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
 import InputField from "../../components/InputField";
 import ButtonComponent from "../../components/ButtonComponent";
+import { auth } from "../../config/firebase";
+
 
 const RecoveryPW = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const { height } = useWindowDimensions();
 
   const confirmEmailNavigator = () => {
-    navigation.navigate("ConfirmEmail");
+    // auth.sendPasswordResetEmail(email)
+    // .then(()=>{
+    //   alert("Please, check your email to reset password!")
+    // }).catch((error)=>{
+    //   alert(error)
+    // })
+    loginNavigator()
   };
 
   const loginNavigator = () => {

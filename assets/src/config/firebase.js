@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+import * as firebase from "firebase/compat";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from 'firebase/auth'
@@ -19,14 +20,16 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-const analytics = getAnalytics(app);
+firebase.initializeApp(firebaseConfig);
+const initDB = initializeApp(firebaseConfig);
+export const db = getFirestore(initDB);
+// const analytics = getAnalytics(initDB);
 
-export const auth = getAuth(app);
+export const auth = getAuth(initDB);
 
 export const eventRef = collection(db, 'events')
 export const categoryRef = collection(db, "categories");
 export const patternRef = collection(db, "patterns");
 
-export default app;
+console.log("FIREBASE_DB_ROOT: ", firebase);
+export default firebase;

@@ -47,16 +47,13 @@ const StackSettingNavigator = createNativeStackNavigator();
 export default function Navigator() {
   const { user } = useAuth();
 
-  
-
-
 function AddEventNavigator() {
   return (
     <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
       <StackLoginNavigator.Screen name="Catagory" component={Category} />
       <StackLoginNavigator.Screen name="Event" component={Event} />
-      <StackLoginNavigator.Screen name="addEvent" component={addevent} />
-      <StackLoginNavigator.Screen name="EditEvent" component={EditEvent} />
+      {/* <StackLoginNavigator.Screen name="addEvent" component={addevent} /> */}
+      {/* <StackLoginNavigator.Screen name="EditEvent" component={EditEvent} /> */}
     </StackLoginNavigator.Navigator>
   );
 }
@@ -176,7 +173,7 @@ function MainNavigator() {
         component={Event}
         options={{
           title: "Event",
-          headerShown: true,
+          headerShown: false,
           headerStyle: {
             height: 0,
           },
@@ -186,8 +183,8 @@ function MainNavigator() {
         name="Category"
         component={Category}
         options={{
-          title: "Dashboard",
-          headerShown: true,
+          title: "Category",
+          headerShown: false,
           headerStyle: {
             height: 0,
           },
@@ -198,7 +195,7 @@ function MainNavigator() {
         component={PatternNavigator}
         options={{
           title: "Pattern",
-          headerShown: true,
+          headerShown: false,
           headerStyle: {
             height: 0,
           },
@@ -209,7 +206,7 @@ function MainNavigator() {
         component={SettingNavigator}
         options={{
           title: "Setting",
-          headerShown: true,
+          headerShown: false,
           headerStyle: {
             height: 0,
           },

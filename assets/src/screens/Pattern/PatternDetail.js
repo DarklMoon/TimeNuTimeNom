@@ -11,6 +11,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+// import { firebaseDB } from "../../config/firebase"
+
+// import firestore from "@react-native-firebase/firestore";
+import { getDocs, deleteDoc, collection } from "firebase/firestore";
+// import * as firebase from 'firebase';
+// import 'firebase/firestore'; // If you're using Firestore
+import { firebase } from "../../config/firebase";
+
+
 
 // import { PATTERN_DATA } from "../../data/PatternData";
 import HeaderComponent from "../../components/HeaderComponent";
@@ -24,6 +33,7 @@ const PatternDetail = ({ navigation, route }) => {
   const arrayOfDays = Object.keys(data.days);
   const events = Object.entries(data.days);
   console.log("PatternDetail:", events.length)
+  console.log("PatternI_d:", data.id)
 
   const renderEvents = () =>{
       const showEvent = []
@@ -58,8 +68,28 @@ const PatternDetail = ({ navigation, route }) => {
     }
     return showEvent;
   }
+const deletePattern = async () => {
+  try {
+    console.log("FIREBASE_DB: ", firebase);
+    const delSubjDoc = firebase.firestore().collection("patterns").doc(data.id);
+    await delSubjDoc.delete();
+    console.log("Document deleted successfully");
+  } catch (error) {
+    console.error("Error deleting document: ", error.message);
+  }
+}
 
-
+  const deleteSubject= ()=> {
+    const delSubjDoc = firestore().collection("patterns").doc(data.id);
+    delSubjDoc.delete().then(() => {
+        navigation.navigate("Pattern");
+        console.log("DELETE PATTERN SUCCESSFUL")
+      // Alert.alert(
+      //   "Deleting Alert",
+      //   "The subject was deleted!! Pls check your DB!!"
+      // );
+    });
+  }
   return (
     // <LinearGradient
     //   //   colors={["#2FBCBC", "#D8FFF8"]
@@ -91,8 +121,8 @@ const PatternDetail = ({ navigation, route }) => {
             {/* End Header In Box */}
             <CardPattern
               item={data}
-              backgroundColor={data.bgColor}
-              textColor={"white"}
+              backgroundColor={"white"}
+              textColor={"black"}
               days={arrayOfDays}
             />
             <View style={{ position: "relative" }}>
@@ -133,14 +163,15 @@ const PatternDetail = ({ navigation, route }) => {
                 // onPress={}
               />
             </View>
-            <View style={{alignItems:"center", padding:10, paddingBottom:20}}>
-            <ButtonComponent
-              text={"Delete"}
-              width={"40%"}
-              type={"Delete"}
-              // onPress={}
-            />
-
+            <View
+              style={{ alignItems: "center", padding: 10, paddingBottom: 20 }}
+            >
+              <ButtonComponent
+                text={"Delete"}
+                width={"40%"}
+                type={"Delete"}
+                onPress={deletePattern}
+              />
             </View>
           </View>
         </ScrollView>
