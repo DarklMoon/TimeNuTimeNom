@@ -1,3 +1,4 @@
+import EVENT_DATA from "../data/EventData";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 // import library ที่จำเป็น
@@ -16,39 +17,35 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 // RNCalendarEvents.checkPermissions((readOnly = false));
 
-const Event = ({ navigation, route }) => {
-  const Catagory = route.params.Catagory;
-  // console.log(Catagory)
-
+const AllEvent = ({ navigation, route }) => {
+  // console.log(EVENT_DATA);
   const [Name, setName] = useState("");
   // const [Name, sestName] = useState("");
   const [description, setDescription] = useState("");
+  //modal
+  const [modalVisible, setModalVisible] = useState(false);
+  //list of Catagory
+  const [Event, setEvent] = useState(EVENT_DATA);
+  console.log(Event);
 
-  //test search
   const [searchTerm, setSearchTerm] = useState("");
   const handleChange = (text) => {
     setSearchTerm(text);
   };
   const handleSearch = () => {};
 
-  //modal
-  const [modalVisible, setModalVisible] = useState(false);
-
-  //list of Catagory
-  const [Event, setEvent] = useState([]);
-
   //addEvent
-  const Eventhandler = () => {
-    const detail = {
-      Name: Name,
-      description: description,
-      Catagory: Catagory,
-      backgroundColor: Catagory.backgroundColor,
-    };
-    setEvent([...Event, detail]);
-    setModalVisible(!modalVisible);
-    console.log(Event);
-  };
+  // const Eventhandler = () => {
+  //   const detail = {
+  //     Name: Name,
+  //     description: description,
+  //     Catagory: Catagory,
+  //     backgroundColor: Catagory.backgroundColor,
+  //   };
+  //   setEvent([...Event, detail]);
+  //   setModalVisible(!modalVisible);
+  //   console.log(Event);
+  // };
 
   const removeFirstObject = (item, Index) => {
     console.log(Index);
@@ -64,7 +61,8 @@ const Event = ({ navigation, route }) => {
   const Item = (data) => (
     <View
       style={{
-        backgroundColor: data.backgroundColor,
+        // backgroundColor:'skyblue',
+        backgroundColor: data.bg,
         padding: 22,
         margin: 5,
         borderRadius: 15,
@@ -72,10 +70,10 @@ const Event = ({ navigation, route }) => {
       }}
     >
       <View style={{ flexDirection: "row" }}>
-        <Text style={{ fontSize: 18, marginRight: 10 }}>19.00</Text>
-        <Text style={{ fontSize: 18 }}>19/9/65</Text>
+        <Text style={{ fontSize: 16, marginRight: 10 }}>{data.endTime}</Text>
+        <Text style={{ fontSize: 16 }}>19/9/65</Text>
       </View>
-      <Text style={styles.title}>{data.Name}</Text>
+      <Text style={styles.title}>{data.title}</Text>
 
       <View
         style={{
@@ -85,11 +83,11 @@ const Event = ({ navigation, route }) => {
           right: 20,
         }}
       >
-        <Feather name="edit" size={32} color="black" />
+        <Feather name="edit" size={24} color="black" />
         <FontAwesome5
           name="trash"
           marginLeft={20}
-          size={32}
+          size={24}
           color="black"
           onPress={removeFirstObject}
         />
@@ -138,21 +136,23 @@ const Event = ({ navigation, route }) => {
                   <Text style={{ margin: 15, fontSize: 25, marginBottom: -5 }}>
                     Description
                   </Text>
-                  <TextInput
-                    style={{
-                      margin: 15,
-                      borderWidth: 0.5,
-                      justifyContent: "flex-start",
-                      fontSize: 18,
-                    }}
-                    placeholder="description"
-                    multiline={true}
-                    numberOfLines={5}
-                    value={description}
-                    onChangeText={(input) => {
-                      setDescription(input);
-                    }}
-                  />
+                  <View>
+                    <TextInput
+                      style={{
+                        margin: 15,
+                        borderWidth: 0.5,
+                        justifyContent: "flex-start",
+                        fontSize: 18,
+                      }}
+                      placeholder="description"
+                      multiline={true}
+                      numberOfLines={5}
+                      value={description}
+                      onChangeText={(input) => {
+                        setDescription(input);
+                      }}
+                    />
+                  </View>
                 </View>
                 <View
                   style={{
@@ -258,9 +258,12 @@ const Event = ({ navigation, route }) => {
                 data={Event}
                 renderItem={({ item }) => (
                   <Item
-                    backgroundColor={item.backgroundColor}
+                    title={item.title}
+                    startTime={item.startTime}
+                    endTime={item.endTime}
                     description={item.description}
-                    Name={item.Name}
+                    categoryName={item.categories.Name}
+                    bg={item.categories.bg}
                   />
                 )}
                 keyExtractor={(item) => item.id}
@@ -368,4 +371,48 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Event;
+export default AllEvent;
+// import EVENT_DATA from "../data/EventData";
+// import { Text,View } from "react-native";
+// import { LinearGradient } from "expo-linear-gradient";
+// import { StyleSheet } from "react-native";
+// import { FlatList } from "react-native";
+// const AllEvent = ({ navigation, route }) => {
+
+//   const test = ()=>{
+//     console.log(EVENT_DATA[0].event00);
+//   }
+//   return (
+//     <LinearGradient
+//       colors={["#2FBCBC", "#D8FFF8"]}
+//       start={{ x: 0, y: 0 }}
+//       end={{ x: 1, y: 1 }}
+//       style={styles.root}
+//     >
+//       <View >
+//       <FlatList
+//                 style={{ marginBottom: 130 }}
+//                 data={EVENT_DATA}
+//                 renderItem={({ item }) => (
+//                   <View>
+//                     <Text>{item.title}</Text>
+//                   </View>
+//                   // <Item
+//                   //   backgroundColor={item.backgroundColor}
+//                   //   description={item.description}
+//                   //   Name={item.Name}
+//                   // />
+//                 )}
+//                 keyExtractor={(item) => item.id}
+//               />
+//       </View>
+//     </LinearGradient>
+//   );
+// };
+// export default AllEvent;
+// const styles = StyleSheet.create({
+//   root: {
+//     flex: 1,
+//     justifyContent:'center'
+//   },
+// });

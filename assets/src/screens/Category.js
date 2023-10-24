@@ -21,6 +21,7 @@ import ColorPicker, {
   OpacitySlider,
   HueSlider,
 } from "reanimated-color-picker";
+import { EvilIcons } from "@expo/vector-icons";
 
 const Category = ({ navigation }) => {
   //Input
@@ -186,7 +187,7 @@ const Category = ({ navigation }) => {
                   <Text style={styles.textStyle}>Canceled</Text>
                 </Pressable>
               </View>
-              <Text style={{ marginTop: 10, color: "red", fontSize: 20 }}>
+              <Text style={{ marginTop: 10, color: "red", fontSize: 16 }}>
                 !!Be careful about choosing shades.!!
               </Text>
             </View>
@@ -201,6 +202,13 @@ const Category = ({ navigation }) => {
             value={searchTerm}
             onChangeText={handleChange}
             onSubmitEditing={handleSearch}
+            style={{ marginRight: 125 }}
+          />
+          <EvilIcons
+            name="search"
+            size={24}
+            color="black"
+            style={{ marginTop: 2, borderLeftWidth: 0.5, paddingLeft: 5 }}
           />
         </View>
         {/* searchbar */}
@@ -234,8 +242,12 @@ const Category = ({ navigation }) => {
                 data={data}
                 renderItem={({ item }) => (
                   <Item
-                    onSelect={()=>{
-                      navigation.navigate("Event",{title:item.title,background:item.backgroundColor,Catagory:item})
+                    onSelect={() => {
+                      navigation.navigate("Event", {
+                        title: item.title,
+                        background: item.backgroundColor,
+                        Catagory: item,
+                      });
                     }}
                     backgroundColor={item.backgroundColor}
                     title={item.title}
@@ -256,23 +268,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchContainer: {
-    padding: 10,
-    marginLeft: 90,
-    marginRight: 120,
-    marginTop: 40,
-    marginBottom: 8,
+    flexDirection: "row",
+    padding: 5,
+    marginLeft: 80,
+    marginRight: 80,
+    marginTop: 30,
     backgroundColor: "#fff",
-    borderColor: "#000",
+    borderWidth: 0.2,
   },
   CategoryContainer: {
     flex: 1,
-    borderRadius: 25,
-    marginBottom: 10,
+    borderRadius: 15,
+    margin: 8,
     backgroundColor: "#fff",
   },
   header: {
     fontSize: 50,
-    fontWeight: "700",
+    fontWeight: "500",
   },
   catogoryItem: {},
   title: {
@@ -287,9 +299,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.4)",
   },
   modalView: {
-    width: 400,
-    height: 550,
-    margin: 30,
+    // width: 400,
+    // height: 550,
+    margin: 8,
+    marginTop:50,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
@@ -301,15 +314,15 @@ const styles = StyleSheet.create({
 
   buttonOpen: {
     borderRadius: 100,
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     elevation: 5,
     position: "absolute",
     right: 20,
     bottom: 20,
     zIndex: 9999,
     justifyContent: "center",
-    backgroundColor: "#F194FF",
+    backgroundColor: "#ff5757",
   },
   buttonClose: {
     borderRadius: 10,
