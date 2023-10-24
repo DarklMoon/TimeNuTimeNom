@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect} from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   ScrollView,
-  Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
@@ -17,24 +16,13 @@ import ButtonComponent from "../../components/ButtonComponent";
 const ResetPw = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const { height } = useWindowDimensions();
-
   const signInPress = () => {
-    console.log("SEE")
-    alert('HelloWolrd')
-    // Alert.alert('Alert Title', 'My Alert Msg', [
-    //   {
-    //     text: 'Cancel',
-    //     onPress: () => console.log('Cancel Pressed'),
-    //     style: 'cancel',
-    //   },
-    //   {text: 'OK', onPress: () => console.log('OK Pressed')},
-    // ])
+    console.warn("Sin in");
   };
 
   const loginNavigator = () => {
     navigation.navigate("Login");
   };
-
 
   return (
     <LinearGradient
@@ -108,8 +96,7 @@ const ResetPw = ({ navigation }) => {
                 <ButtonComponent
                   text={"Send"}
                   width={"30%"}
-                  onPress={() => {alert("hello")}}
-
+                  onPress={signInPress}
                 />
               </View>
             </View>
