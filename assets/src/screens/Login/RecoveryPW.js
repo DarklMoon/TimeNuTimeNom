@@ -13,7 +13,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
 import InputField from "../../components/InputField";
 import ButtonComponent from "../../components/ButtonComponent";
-import { auth } from "../../config/firebase";
+import { firebase,auth } from "../../config/firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 
 const RecoveryPW = ({ navigation }) => {
@@ -21,13 +22,14 @@ const RecoveryPW = ({ navigation }) => {
   const { height } = useWindowDimensions();
 
   const confirmEmailNavigator = () => {
-    // auth.sendPasswordResetEmail(email)
-    // .then(()=>{
-    //   alert("Please, check your email to reset password!")
-    // }).catch((error)=>{
-    //   alert(error)
-    // })
-    loginNavigator()
+    sendPasswordResetEmail(auth,email)
+    .then(() => {
+      Alert.alert("Password Reset Email Sent", "Please check your email to reset your password.");
+    })
+    .catch((error) => {
+      Alert.alert("Password Reset Error", error.message);
+    });
+
   };
 
   const loginNavigator = () => {
