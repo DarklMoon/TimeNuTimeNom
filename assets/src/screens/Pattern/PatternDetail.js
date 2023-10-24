@@ -11,15 +11,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-// import { firebaseDB } from "../../config/firebase"
 
-// import firestore from "@react-native-firebase/firestore";
-import { getDocs, deleteDoc, collection } from "firebase/firestore";
-// import * as firebase from 'firebase';
-// import 'firebase/firestore'; // If you're using Firestore
 import { firebase } from "../../config/firebase";
+import { getFirestore, collection, doc, deleteDoc } from "firebase/firestore";
+// import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 
-
+import { db } from "../../config/firebase"
 
 // import { PATTERN_DATA } from "../../data/PatternData";
 import HeaderComponent from "../../components/HeaderComponent";
@@ -30,7 +27,14 @@ import CardEvent from "../../components/CardEvent";
 const PatternDetail = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState();
   const data = route.params
-  const arrayOfDays = Object.keys(data.days);
+  const rawArrayOfDays = Object.keys(data.days);
+  const sortOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  console.log("DAY_OF_PATTERN: ", rawArrayOfDays);
+  const arrayOfDays = rawArrayOfDays.sort((a, b) => {
+    const dayOrderA = sortOrder.indexOf(a);
+    const dayOrderB = sortOrder.indexOf(b);
+    return dayOrderA - dayOrderB;
+  });
   const events = Object.entries(data.days);
   console.log("PatternDetail:", events.length)
   console.log("PatternI_d:", data.id)
@@ -68,28 +72,25 @@ const PatternDetail = ({ navigation, route }) => {
     }
     return showEvent;
   }
+
+const usePattern=()=>{
+  const currentDay = new Date();
+  console.log(currentDay)
+}
+
+
 const deletePattern = async () => {
   try {
-    console.log("FIREBASE_DB: ", firebase);
-    const delSubjDoc = firebase.firestore().collection("patterns").doc(data.id);
-    await delSubjDoc.delete();
+    const db = getFirestore(); // Make sure to initialize your Firestore instance
+    const documentRef = doc(db, "patterns", data.id);
+    await deleteDoc(documentRef);
+    navigation.navigate("Pattern")
     console.log("Document deleted successfully");
   } catch (error) {
     console.error("Error deleting document: ", error.message);
   }
 }
 
-  const deleteSubject= ()=> {
-    const delSubjDoc = firestore().collection("patterns").doc(data.id);
-    delSubjDoc.delete().then(() => {
-        navigation.navigate("Pattern");
-        console.log("DELETE PATTERN SUCCESSFUL")
-      // Alert.alert(
-      //   "Deleting Alert",
-      //   "The subject was deleted!! Pls check your DB!!"
-      // );
-    });
-  }
   return (
     // <LinearGradient
     //   //   colors={["#2FBCBC", "#D8FFF8"]
@@ -154,7 +155,7 @@ const deletePattern = async () => {
               <ButtonComponent
                 text={"Use Pattern"}
                 width={"30%"}
-                // onPress={}
+                onPress={usePattern}
               />
               <ButtonComponent
                 text={"Edit"}

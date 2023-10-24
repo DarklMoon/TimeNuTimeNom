@@ -40,6 +40,10 @@ import Resetpass from "../screens/SettingPage/Resetpass";
 import AllEvent from "../screens/AllEvent";
 import AddEvent from "../screens/AddEvent";
 import editEvent from "../../../screen/EditEvent";
+import { useDispatch, useSelector } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebase";
+import { setUser } from "../redux/slices/user";
 
 const DrawerNavigator = createDrawerNavigator();
 const BottmTapNavigator = createBottomTabNavigator();
@@ -48,7 +52,17 @@ const StackLoginNavigator = createNativeStackNavigator();
 const StackSettingNavigator = createNativeStackNavigator();
 
 export default function Navigator() {
-  const { user } = useAuth();
+  const { user } = useSelector(state=> state.user)
+
+  const dispatch = useDispatch();
+
+  onAuthStateChanged(auth, u=>{
+    console.log("GOT_USER: ", u)
+    dispatch(setUser(u))
+
+  })
+  // const { user } = useAuth();
+
 
 function AddEventNavigator() {
   return (

@@ -184,7 +184,16 @@ const Pattern = ({navigation}) => {
     const renderItem = ({ item }) => {
       // const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
       // const color = item.id === selectedId ? "black" : "white";
+      const sortOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
       const arrayOfDays = Object.keys(item.days)
+      console.log("DAY_OF_PATTERN: ", arrayOfDays)
+      const sortedArray = arrayOfDays.sort((a, b) => {
+        const dayOrderA = sortOrder.indexOf(a);
+        const dayOrderB = sortOrder.indexOf(b);
+        return dayOrderA - dayOrderB;
+      });
+      console.log(sortedArray)
+
       // console.log("ITEM_IN_CARD: ", item)
       // fetchPattern();
       // console.log("Item:", item)
@@ -203,7 +212,7 @@ const Pattern = ({navigation}) => {
           }}
           backgroundColor={"white"}
           textColor={"black"}
-          days={arrayOfDays}
+          days={sortedArray}
         />
       );
     };
@@ -227,6 +236,7 @@ const Pattern = ({navigation}) => {
                   style={{
                     fontSize: 30,
                     fontWeight: "bold",
+                    paddingBottom:20,
                     paddingTop: 30,
                     paddingLeft: 20,
                     paddingBottom: 10,
@@ -425,6 +435,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
     borderRadius: 10,
+    paddingBottom:20,
   },
   line: {
     position: "absolute",
@@ -442,7 +453,7 @@ const styles = StyleSheet.create({
   img: {
     position: "absolute",
     right: 15,
-    bottom: 10,
+    bottom:15,
   },
 });
 
