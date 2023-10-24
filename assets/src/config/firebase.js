@@ -1,15 +1,10 @@
 // Import the functions you need from the SDKs you need
-import * as firebase from "firebase/compat";
+// import * as firebase from "firebase/compat";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from 'firebase/auth'
 import { getFirestore, collection } from "firebase/firestore";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyB7BlpJlzMdPYjVnD-_M0jUtNjnrEWAzYQ",
   authDomain: "timenutimenom.firebaseapp.com",
@@ -21,15 +16,23 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 const initDB = initializeApp(firebaseConfig);
+
 export const db = getFirestore(initDB);
-// const analytics = getAnalytics(initDB);
 
 export const auth = getAuth(initDB);
 
 export const eventRef = collection(db, 'events')
 export const categoryRef = collection(db, "categories");
 export const patternRef = collection(db, "patterns");
-console.log("FIREBASE_DB_ROOT: ", firebase);
-export default firebase;
+
+export default initDB;
+
+// console.log("FIREBASE_DB_ROOT: ", firebase);
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// const analytics = getAnalytics(initDB);
