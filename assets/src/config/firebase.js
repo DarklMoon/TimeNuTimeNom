@@ -28,5 +28,4 @@ export const auth = getAuth(app);
 export const eventRef = collection(db, 'events')
 export const categoryRef = collection(db, "categories");
 export const patternRef = collection(db, "patterns");
-
 export default app;
