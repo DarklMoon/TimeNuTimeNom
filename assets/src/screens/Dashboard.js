@@ -129,7 +129,7 @@ const Dashboard = ({ navigation }) => {
                       { color: "transparent" },
                       {
                         startingDay: false,
-                        endingDay: false,
+                        endingDay: true,
                         color: "#f0e68c",
                       },
                     ],

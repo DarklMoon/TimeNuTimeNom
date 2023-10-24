@@ -26,8 +26,9 @@ import ButtonComponent from "../../components/ButtonComponent";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { async } from "@firebase/util";
-import { addDoc } from "firebase/firestore";
+import { addDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { patternRef } from "../../config/firebase";
+import { useIsFocused } from "@react-navigation/native";
 
 
 const Pattern = ({navigation}) => {
@@ -43,6 +44,7 @@ const Pattern = ({navigation}) => {
     const [sundayEvent, setSundayEvent] = useState([]);
     const [stateCreate, setStateCreate] = useState(false);
     const { user } = useSelector(state=>state.user);
+    const [patternShow, setPatternShow] = useState([])
     const [pattern, setPattern] = useState(
       {
       id: "test",
@@ -51,10 +53,21 @@ const Pattern = ({navigation}) => {
       days: {},
     }
     );
+    const isFocused = useIsFocused();
 
     // const { user } = useAuth();
     // setUid(user.uid)
     console.log("UID_: ", user.uid)
+
+    const fetchPattern = async ()=>{
+      const q = query(patternRef, where("userId", "==", user.uid))
+      const querySnapshot = await getDocs(q);
+      let data=[];
+      querySnapshot.forEach(doc=>{
+        data.push({...doc.data(), id: doc.id})
+      })
+      setPatternShow(data)
+    }
 
     const handleCreatePattern = async ()=> {
       if (pattern && stateCreate){
@@ -125,21 +138,21 @@ const Pattern = ({navigation}) => {
         });
       }
       if (fridayEvent.length != 0) {
-        var fridayPattern = { Thu: fridayEvent };
+        var fridayPattern = { Fri: fridayEvent };
         updatedPattern = updatePattern({
           daysPattern: fridayPattern,
           pattern: updatedPattern,
         });
       }
       if (saturdayEvent.length != 0) {
-        var saturdayPattern = { Thu: saturdayEvent };
+        var saturdayPattern = { Sat: saturdayEvent };
         updatedPattern = updatePattern({
           daysPattern: saturdayPattern,
           pattern: updatedPattern,
         });
       }
       if (sundayEvent.length != 0) {
-        var sundayPattern = { Thu: sundayEvent };
+        var sundayPattern = { Sun: sundayEvent };
         updatedPattern = updatePattern({
           daysPattern: sundayPattern,
           pattern: updatedPattern,
@@ -151,11 +164,18 @@ const Pattern = ({navigation}) => {
     }
     
     useEffect(() => {
-      console.log("useEffect_PATTERN:", pattern);
-      handleCreatePattern()
+      console.log("useEffect_PATTERN: ", pattern);
+      if(stateCreate === true)
+        handleCreatePattern()
+        fetchPattern();
       setStateCreate(false);
     }, [stateCreate]);
 
+     useEffect(() => {
+       if(isFocused)
+        fetchPattern()
+       console.log("PATTERN_SHOW: ",patternShow)
+     }, [isFocused])
 
     const toggleModal = () => {
       setModalVisible(!isModalVisible);
@@ -163,8 +183,10 @@ const Pattern = ({navigation}) => {
 
     const renderItem = ({ item }) => {
       // const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
-      const color = item.id === selectedId ? "black" : "white";
+      // const color = item.id === selectedId ? "black" : "white";
       const arrayOfDays = Object.keys(item.days)
+      // console.log("ITEM_IN_CARD: ", item)
+      // fetchPattern();
       // console.log("Item:", item)
       
       return (
@@ -175,12 +197,12 @@ const Pattern = ({navigation}) => {
             navigation.navigate("PatternDetail", {
               id: item.id,
               title: item.title,
-              bgColor: item.bgColor,
+              // bgColor: item.bgColor,
               days: item.days,
             });
           }}
-          backgroundColor={item.bgColor}
-          textColor={color}
+          backgroundColor={"white"}
+          textColor={"black"}
           days={arrayOfDays}
         />
       );
@@ -217,7 +239,7 @@ const Pattern = ({navigation}) => {
               {/* End Header In Box */}
               <SafeAreaView style={styles.flatContainer}>
                 <FlatList
-                  data={PATTERN_DATA}
+                  data={patternShow}
                   renderItem={renderItem}
                   keyExtractor={(item) => item.id}
                   extraData={selectedId}

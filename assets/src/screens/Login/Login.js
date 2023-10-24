@@ -32,6 +32,7 @@ const Login = ({ navigation }) => {
       }
     } catch (err) {
       console.log("Got Errors: ", err.message);
+      alert(err.message)
       // Snackbar.show({
       //   text: err.message,
       //   backgroundColor: "red",
