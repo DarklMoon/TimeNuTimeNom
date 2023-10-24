@@ -13,14 +13,8 @@ import {
 } from "react-native";
 import RNCalendarEvents from "react-native-calendar-events";
 import { Feather } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
-import { eventRef } from "../config/firebase";
-import { addDoc } from "firebase/firestore";
-import { useSelector } from "react-redux";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useEffect } from "react";
 // RNCalendarEvents.checkPermissions((readOnly = false));
 
 const AllEvent = ({ navigation, route }) => {
@@ -30,17 +24,9 @@ const AllEvent = ({ navigation, route }) => {
   const [description, setDescription] = useState("");
   //modal
   const [modalVisible, setModalVisible] = useState(false);
-  const { user } = useSelector((state) => state.user);
-  //Date & Time
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [Startdate, setStartdate] = useState("0000-00-00");
-  const [Enddate, setEnddate] = useState("0000-00-00");
-  const [SorE, setSorE] = useState("");
-
-  const [Event, setEvent] = useState([]);
-
-  const [State, setState] = useState(false);
-  // console.log(Event);
+  //list of Catagory
+  const [Event, setEvent] = useState(EVENT_DATA);
+  console.log(Event);
 
   const [searchTerm, setSearchTerm] = useState("");
   const handleChange = (text) => {
@@ -48,79 +34,30 @@ const AllEvent = ({ navigation, route }) => {
   };
   const handleSearch = () => {};
 
-  //Date & Time
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    const formattedDate = date.toISOString().slice(0, 10);
-    if (SorE == "e") {
-      console.warn("A Enddate picked: ", formattedDate);
-      setEnddate(formattedDate);
-    }
-    if (SorE == "s") {
-      console.warn("A Startdate picked: ", formattedDate);
-      setStartdate(formattedDate);
-    }
-    hideDatePicker();
-  };
-
-  const handleCreateEvent = async () => {
-    if (Event) {
-      let doc = await addDoc(eventRef, {
-        title: Event.title,
-        categories: Event.categories,
-        place: Event.place,
-        startTime: Event.startTime,
-        endTime: Event.endTime,
-        description: Event.description,
-        userId: user.uid,
-      });
-      if (doc && doc.id) {
-        console.log("ADD DATA SUCCESSFUL");
-      }
-    }
-  };
-
-  const Eventhandler = () => {
-    const dataEvent = {
-      title: Name,
-      categories: {
-        WorkOut: "#FFA607",
-        Name: "WorkOut",
-        bg: "#ffce47",
-      },
-      place: "",
-      startTime: Startdate,
-      endTime: Enddate,
-      description: description,
-      userId: user.uid,
-    };
-    setEvent(...Event, dataEvent);
-    setState(true);
-    // console.log(Event);
-
-    console.log("5555");
-  };
-
-  useEffect(() => {
-    if (State == true) {
-      handleCreateEvent();
-    }
-    setState(false);
-  }, [State]);
+  //addEvent
+  // const Eventhandler = () => {
+  //   const detail = {
+  //     Name: Name,
+  //     description: description,
+  //     Catagory: Catagory,
+  //     backgroundColor: Catagory.backgroundColor,
+  //   };
+  //   setEvent([...Event, detail]);
+  //   setModalVisible(!modalVisible);
+  //   console.log(Event);
+  // };
 
   const removeFirstObject = (item, Index) => {
     console.log(Index);
     const newList = Event.splice(Index, 1);
     setEvent(newList);
   };
+  //addEvent
 
+  // const Eventfillter = Event.filter((item) => {
+  //    Catagory.Catagory == item.Catagory;
+  // });
+  // console.log(Eventfillter);
   const Item = (data) => (
     <View
       style={{
@@ -171,13 +108,19 @@ const AllEvent = ({ navigation, route }) => {
           animationType="slide"
           transparent={true}
           visible={modalVisible}
+          onBackdropPress={() => {
+            setModalVisible(!modalVisible);
+          }}
+          onBackButtonPress={() => {
+            setModalVisible(!modalVisible);
+          }}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
         >
           <View style={styles.centeredView}>
             <View style={[styles.AddEventsite]}>
-              <View style={{ margin: 10 }}>
+              <View style={{ margin: 10, justifyContent: "center" }}>
                 <TextInput
                   style={styles.Input}
                   placeholder="Name"
@@ -195,54 +138,10 @@ const AllEvent = ({ navigation, route }) => {
                   }}
                 ></TextInput> */}
                 {/* <TextInput style={styles.Input} placeholder="Place"></TextInput> */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <Pressable
-                    style={{ flexDirection: "row" }}
-                    onPress={() => {
-                      showDatePicker();
-                      setSorE("s");
-                    }}
-                  >
-                    <Text style={{ marginTop: 5 }}>{Startdate}</Text>
-                    <AntDesign
-                      style={{ marginLeft: 5 }}
-                      name="calendar"
-                      size={28}
-                      color="black"
-                    />
-                  </Pressable>
-                  <Pressable
-                    style={{ flexDirection: "row", marginLeft: 5 }}
-                    onPress={() => {
-                      showDatePicker();
-                      setSorE("e");
-                    }}
-                  >
-                    <Text style={{ marginTop: 5 }}>{Enddate}</Text>
-                    <AntDesign
-                      style={{ marginLeft: 5 }}
-                      name="calendar"
-                      size={28}
-                      color="orange"
-                    />
-                  </Pressable>
-                  <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    onConfirm={handleConfirm}
-                    onCancel={hideDatePicker}
-                  />
-                </View>
                 <View style={{ justifyContent: "flex-start" }}>
-                  <Text style={{ margin: 15, fontSize: 22, marginBottom: -5 }}>
+                  <Text style={{ margin: 15, fontSize: 25, marginBottom: -5 }}>
                     Description
                   </Text>
-
                   <View>
                     <TextInput
                       style={{
@@ -264,20 +163,20 @@ const AllEvent = ({ navigation, route }) => {
                 <View
                   style={{
                     flexDirection: "row",
-                    height: 400,
+                    height: 420,
                     justifyContent: "center",
                     alignItems: "flex-end",
                   }}
                 >
-                  <View style={{}}>
+                  <View style={{ fontSize: 50 }}>
                     <Pressable
                       style={[
                         styles.buttons,
                         {
                           backgroundColor: "#d9d9d9",
                           marginRight: 15,
-                          paddingLeft: 20,
-                          paddingRight: 30,
+                          paddingLeft: 40,
+                          paddingRight: 40,
                           elevation: 5,
                         },
                       ]}
@@ -296,14 +195,13 @@ const AllEvent = ({ navigation, route }) => {
                       ]}
                       onPress={() => {
                         Eventhandler();
-                        setState(true);
                       }}
                     >
                       <Text
                         style={{
                           fontSize: 22,
-                          paddingLeft: 30,
-                          paddingRight: 30,
+                          paddingLeft: 50,
+                          paddingRight: 50,
                         }}
                       >
                         Apply
@@ -415,12 +313,12 @@ const styles = StyleSheet.create({
   //modalstyle
   centeredView: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.4)",
   },
   modalView: {
-    width: 300,
-    height: 430,
+    width: 400,
+    height: 400,
     margin: 30,
     backgroundColor: "white",
     borderRadius: 20,
@@ -470,7 +368,7 @@ const styles = StyleSheet.create({
   },
   Input: {
     margin: 15,
-    fontSize: 22,
+    fontSize: 25,
     borderBottomWidth: 2,
   },
   buttons: {
@@ -480,108 +378,47 @@ const styles = StyleSheet.create({
 });
 
 export default AllEvent;
-
 // import EVENT_DATA from "../data/EventData";
-// import { Text, View, Button, Pressable } from "react-native";
+// import { Text,View } from "react-native";
 // import { LinearGradient } from "expo-linear-gradient";
 // import { StyleSheet } from "react-native";
-// import React, { useState } from "react";
-// import { AntDesign } from "@expo/vector-icons";
-// import { set } from "date-fns";
 // import { FlatList } from "react-native";
-
 // const AllEvent = ({ navigation, route }) => {
-//   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-//   const [Startdate, setStartdate] = useState("0000-00-00");
-//   const [Enddate, setEnddate] = useState("0000-00-00");
-//   const [SorE, setSorE] = useState("");
 
-//   const showDatePicker = () => {
-//     setDatePickerVisibility(true);
-//   };
-
-//   const hideDatePicker = () => {
-//     setDatePickerVisibility(false);
-//   };
-
-//   const handleConfirm = (date) => {
-//     const formattedDate = date.toISOString().slice(0, 10);
-//     if (SorE == "e") {
-//       console.warn("A Enddate picked: ", formattedDate);
-//       setEnddate(formattedDate);
-//     }
-//     if (SorE == "s") {
-//       console.warn("A Startdate picked: ", formattedDate);
-//       setStartdate(formattedDate)
-//     }
-//     hideDatePicker();
-//   };
-//   //   const test = ()=>{
-//   //     console.log(EVENT_DATA[0].event00);
-//   //   }
-// return (
-//   <LinearGradient
-//     colors={["#2FBCBC", "#D8FFF8"]}
-//     start={{ x: 0, y: 0 }}
-//     end={{ x: 1, y: 1 }}
-//     style={styles.root}
-//   >
-//     <View>
-//       <Pressable
-//         onPress={() => {
-//           showDatePicker();
-//           setSorE("s");
-//         }}
-//       >
-//         <AntDesign name="calendar" size={24} color="black" />
-//       </Pressable>
-//       <Pressable
-//         onPress={() => {
-//           showDatePicker();
-//           setSorE("e");
-//         }}
-//       >
-//         <AntDesign name="calendar" size={24} color="orange" />
-//       </Pressable>
-//       <DateTimePickerModal
-//         isVisible={isDatePickerVisible}
-//         mode="date"
-//         onConfirm={handleConfirm}
-//         onCancel={hideDatePicker}
-//       />
-//       <View>
-//           <Text style={{color:'red'}}>{Startdate}</Text>
-//           <Text style={{color:'blue'}}>{Enddate}</Text>
+//   const test = ()=>{
+//     console.log(EVENT_DATA[0].event00);
+//   }
+//   return (
+//     <LinearGradient
+//       colors={["#2FBCBC", "#D8FFF8"]}
+//       start={{ x: 0, y: 0 }}
+//       end={{ x: 1, y: 1 }}
+//       style={styles.root}
+//     >
+//       <View >
+//       <FlatList
+//                 style={{ marginBottom: 130 }}
+//                 data={EVENT_DATA}
+//                 renderItem={({ item }) => (
+//                   <View>
+//                     <Text>{item.title}</Text>
+//                   </View>
+//                   // <Item
+//                   //   backgroundColor={item.backgroundColor}
+//                   //   description={item.description}
+//                   //   Name={item.Name}
+//                   // />
+//                 )}
+//                 keyExtractor={(item) => item.id}
+//               />
 //       </View>
-{
-  /* <FlatList
-                style={{ marginBottom: 130 }}
-                data={EVENT_DATA}
-            
-                renderItem={({ item }) => (
-                  <View>
-                    <Text>{item.title}</Text>
-                  </View>
-                  // <Item
-                  //   backgroundColor={item.backgroundColor}
-                  //   description={item.description}
-                  //   Name={item.Name}
-                  // />
-                )}
-                keyExtractor={(item) => item.id}
-              /> */
-}
-{
-  /* </View>
-    </LinearGradient>
-  );
-};
-export default AllEvent;
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-}); */
-}
+//     </LinearGradient>
+//   );
+// };
+// export default AllEvent;
+// const styles = StyleSheet.create({
+//   root: {
+//     flex: 1,
+//     justifyContent:'center'
+//   },
+// });
