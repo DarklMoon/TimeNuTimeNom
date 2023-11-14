@@ -29,7 +29,7 @@ const PatternDetail = ({ navigation, route }) => {
   const data = route.params
   const rawArrayOfDays = Object.keys(data.days);
   const sortOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  console.log("DAY_OF_PATTERN: ", rawArrayOfDays);
+  // console.log("DAY_OF_PATTERN: ", rawArrayOfDays);
   const arrayOfDays = rawArrayOfDays.sort((a, b) => {
     const dayOrderA = sortOrder.indexOf(a);
     const dayOrderB = sortOrder.indexOf(b);
@@ -76,6 +76,9 @@ const PatternDetail = ({ navigation, route }) => {
 const usePattern=()=>{
   const currentDay = new Date();
   console.log(currentDay)
+  navigation.navigate("Dashboard", {
+    days: arrayOfDays,
+  });
 }
 
 

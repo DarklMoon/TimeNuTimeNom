@@ -1,25 +1,44 @@
 import Checkbox from "expo-checkbox";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MultiSelectList from "./MultiSelectList";
 import SearchDropDownList from "./SearchDropDownList";
-// import { EVENT_DATA, EVENT_FOR_MUTI } from "../data/EventData";
+import { EVENT_FOR_MUTI } from "../data/EventData";
+import { eventRef } from "../config/firebase";
+import { addDoc, doc, getDocs, query, where } from "firebase/firestore";
 
 
 export default function CheckboxComponent({label, setData}) {
   const [isChecked, setChecked] = useState(false);
-  const [showComponent, setShowComponent] = useState(false)
-  // console.log(EVENT_FOR_MUTI);
+  const [showComponent, setShowComponent] = useState(false);
+  const [events, setEvents] = useState([]);
+  console.log("VALUE_EVENT:  ", EVENT_FOR_MUTI);
   const data = [
     { key: "1", value: "Mobiles" },
     { key: "2", value: "Appliances" },
     { key: "3", value: "Cameras" },
-    { key: "4", value: "Computers"},
+    { key: "4", value: "Computers" },
     { key: "5", value: "Vegetables" },
     { key: "6", value: "Diary Products" },
     { key: "7", value: "Drinks" },
   ];
-  
+
+  // userId == user.uid
+  const fetchevents = async () => {
+    const q = query(eventRef, where("userId", "==", "IcSvLlh9NpNmIcingKUZIPtMrK22"));
+    const querySnapshot = await getDocs(q);
+    let data = [];
+    querySnapshot.forEach((doc) => {
+      data.push({ ...doc.data(), id: doc.id });
+    });
+    setEvents(data);
+    console.log("Fetch_QueryDB:  ", events);
+  };
+
+  useEffect(()=>{
+    
+  })
+
   return (
     <View style={styles.container}>
       <View style={styles.section}>
@@ -39,7 +58,7 @@ export default function CheckboxComponent({label, setData}) {
         <Text style={styles.paragraph}>{label}</Text>
       </View>
       {showComponent && (
-        <MultiSelectList info={data} day={label} setData={setData} />
+        <MultiSelectList info={EVENT_FOR_MUTI} day={label} setData={setData} />
       )}
       {/* <SearchDropDownList /> */}
     </View>

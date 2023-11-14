@@ -57,7 +57,7 @@ const Pattern = ({navigation}) => {
 
     // const { user } = useAuth();
     // setUid(user.uid)
-    console.log("UID_: ", user.uid)
+    // console.log("UID_: ", user.uid)
 
     const fetchPattern = async ()=>{
       const q = query(patternRef, where("userId", "==", user.uid))
@@ -164,7 +164,7 @@ const Pattern = ({navigation}) => {
     }
     
     useEffect(() => {
-      console.log("useEffect_PATTERN: ", pattern);
+      // console.log("useEffect_PATTERN: ", pattern);
       if(stateCreate === true)
         handleCreatePattern()
         fetchPattern();
@@ -174,7 +174,7 @@ const Pattern = ({navigation}) => {
      useEffect(() => {
        if(isFocused)
         fetchPattern()
-       console.log("PATTERN_SHOW: ",patternShow)
+      //  console.log("PATTERN_SHOW: ",patternShow)
      }, [isFocused])
 
     const toggleModal = () => {
@@ -186,14 +186,12 @@ const Pattern = ({navigation}) => {
       // const color = item.id === selectedId ? "black" : "white";
       const sortOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
       const arrayOfDays = Object.keys(item.days)
-      console.log("DAY_OF_PATTERN: ", arrayOfDays)
       const sortedArray = arrayOfDays.sort((a, b) => {
         const dayOrderA = sortOrder.indexOf(a);
         const dayOrderB = sortOrder.indexOf(b);
         return dayOrderA - dayOrderB;
       });
-      console.log(sortedArray)
-
+      // console.log(sortedArray)
       // console.log("ITEM_IN_CARD: ", item)
       // fetchPattern();
       // console.log("Item:", item)
@@ -212,7 +210,7 @@ const Pattern = ({navigation}) => {
           }}
           backgroundColor={"white"}
           textColor={"black"}
-          days={sortedArray}
+          days={arrayOfDays}
         />
       );
     };
