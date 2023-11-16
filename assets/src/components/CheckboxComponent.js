@@ -6,38 +6,58 @@ import SearchDropDownList from "./SearchDropDownList";
 import { EVENT_FOR_MUTI } from "../data/EventData";
 import { eventRef } from "../config/firebase";
 import { addDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { useSelector } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
 
+
+// const data = [
+//   { key: "1", value: "Mobiles" },
+//   { key: "2", value: "Appliances" },
+//   { key: "3", value: "Cameras" },
+//   { key: "4", value: "Computers" },
+//   { key: "5", value: "Vegetables" },
+//   { key: "6", value: "Diary Products" },
+//   { key: "7", value: "Drinks" },
+// ];
 
 export default function CheckboxComponent({label, setData}) {
   const [isChecked, setChecked] = useState(false);
   const [showComponent, setShowComponent] = useState(false);
   const [events, setEvents] = useState([]);
-  console.log("VALUE_EVENT:  ", EVENT_FOR_MUTI);
-  const data = [
-    { key: "1", value: "Mobiles" },
-    { key: "2", value: "Appliances" },
-    { key: "3", value: "Cameras" },
-    { key: "4", value: "Computers" },
-    { key: "5", value: "Vegetables" },
-    { key: "6", value: "Diary Products" },
-    { key: "7", value: "Drinks" },
-  ];
+  const { user } = useSelector((state) => state.user);
 
-  // userId == user.uid
   const fetchevents = async () => {
-    const q = query(eventRef, where("userId", "==", "IcSvLlh9NpNmIcingKUZIPtMrK22"));
+    const q = query(eventRef, where("userId", "==", user.uid));
     const querySnapshot = await getDocs(q);
     let data = [];
     querySnapshot.forEach((doc) => {
       data.push({ ...doc.data(), id: doc.id });
     });
-    setEvents(data);
+    var convertedData = data.map((item) => ({
+      key: item.id,
+      value: item.title,
+    }));
+    console.log("CONVERT_DATA: ", convertedData);
+    setEvents(convertedData);
     console.log("Fetch_QueryDB:  ", events);
   };
 
-  useEffect(()=>{
-    
-  })
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (isChecked && events.length === 0) {
+          await fetchevents();
+        }
+
+        console.log("EVENT_DATA: ", events);
+
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchData();
+  }, [isChecked, events]);
 
   return (
     <View style={styles.container}>
@@ -58,9 +78,13 @@ export default function CheckboxComponent({label, setData}) {
         <Text style={styles.paragraph}>{label}</Text>
       </View>
       {showComponent && (
-        <MultiSelectList info={EVENT_FOR_MUTI} day={label} setData={setData} />
+        <MultiSelectList
+          info={events}
+          day={label}
+          setData={setData}
+          events={events}
+        />
       )}
-      {/* <SearchDropDownList /> */}
     </View>
   );
 }

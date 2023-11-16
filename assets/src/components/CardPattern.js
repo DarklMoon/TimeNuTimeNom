@@ -11,7 +11,9 @@ const CardPattern = ({ item, onPress, backgroundColor, textColor, days }) => (
     onPress={onPress}
     style={[styles.item, { backgroundColor }]}
   >
-    <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+    <Text style={[styles.title, { color: textColor }]}>
+      {item.title === "" ? "New Pattern" : item.title}
+    </Text>
     <View style={{ flexDirection: "row", marginTop: 10 }}>
       {days.map((str, index) => (
         <Text key={index} style={[styles.days, { color: textColor }]}>

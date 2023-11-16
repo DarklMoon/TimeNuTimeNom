@@ -106,7 +106,7 @@ const convertEventData = (events) => {
 };
 
 export const EVENT_FOR_MUTI = convertEventData(EVENT_DATA_MOCK);
-console.log(EVENT_FOR_MUTI);
+console.log("EVENT_DATA", EVENT_FOR_MUTI);
 
 export const EVENT_DATA = [
   {

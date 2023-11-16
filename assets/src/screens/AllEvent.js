@@ -264,7 +264,7 @@ const AllEvent = ({ navigation, route }) => {
                 <View
                   style={{
                     flexDirection: "row",
-                    height: 400,
+                    height: 200,
                     justifyContent: "center",
                     alignItems: "flex-end",
                   }}

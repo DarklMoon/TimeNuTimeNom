@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 // import * as firebase from "firebase/compat";
-import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth'
 import { getFirestore, collection } from "firebase/firestore";
 
@@ -14,13 +14,11 @@ const firebaseConfig = {
   appId: "1:837747271277:web:f00497ddb3706d8d98c164",
   measurementId: "G-78VV0QD69S",
 };
-
 // Initialize Firebase
 // firebase.initializeApp(firebaseConfig);
 const initDB = initializeApp(firebaseConfig);
 
 export const db = getFirestore(initDB);
-
 export const auth = getAuth(initDB);
 
 export const eventRef = collection(db, 'events')

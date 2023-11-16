@@ -82,6 +82,16 @@ const Pattern = ({navigation}) => {
       }
     }
 
+    useEffect(() => {
+      if (stateCreate === true) handleCreatePattern();
+      fetchPattern();
+      setStateCreate(false);
+    }, [stateCreate]);
+
+    useEffect(() => {
+      if (isFocused) fetchPattern();
+    }, [isFocused]);
+    
 
     const updatePattern = ({ daysPattern, pattern }) => {
       return {
@@ -163,19 +173,7 @@ const Pattern = ({navigation}) => {
       setStateCreate(true);
     }
     
-    useEffect(() => {
-      // console.log("useEffect_PATTERN: ", pattern);
-      if(stateCreate === true)
-        handleCreatePattern()
-        fetchPattern();
-      setStateCreate(false);
-    }, [stateCreate]);
-
-     useEffect(() => {
-       if(isFocused)
-        fetchPattern()
-      //  console.log("PATTERN_SHOW: ",patternShow)
-     }, [isFocused])
+    
 
     const toggleModal = () => {
       setModalVisible(!isModalVisible);
@@ -191,10 +189,8 @@ const Pattern = ({navigation}) => {
         const dayOrderB = sortOrder.indexOf(b);
         return dayOrderA - dayOrderB;
       });
-      // console.log(sortedArray)
-      // console.log("ITEM_IN_CARD: ", item)
-      // fetchPattern();
-      // console.log("Item:", item)
+
+      // console.log("ITEM: ", item)
       
       return (
         <CardPattern

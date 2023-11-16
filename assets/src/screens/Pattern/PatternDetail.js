@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   StyleSheet,
@@ -12,11 +12,23 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { firebase } from "../../config/firebase";
-import { getFirestore, collection, doc, deleteDoc } from "firebase/firestore";
-// import { getFirestore, doc, deleteDoc } from "firebase/firestore";
 
-import { db } from "../../config/firebase"
+import { db } from "../../config/firebase";
+import { eventRef } from "../../config/firebase";
+import {
+  addDoc,
+  doc,
+  deleteDoc,
+  collection,
+  getDocs,
+  documentId,
+  query,
+  where,
+  getFirestore,
+} from "firebase/firestore";
+import { useSelector } from "react-redux";
+
+
 
 // import { PATTERN_DATA } from "../../data/PatternData";
 import HeaderComponent from "../../components/HeaderComponent";
@@ -24,84 +36,138 @@ import ButtonComponent from "../../components/ButtonComponent";
 import CardPattern from "../../components/CardPattern";
 import CardEvent from "../../components/CardEvent";
 
-const PatternDetail = ({ navigation, route }) => {
+const PatternDetail =  ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState();
-  const data = route.params
+  const data = route.params;
   const rawArrayOfDays = Object.keys(data.days);
-  const sortOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  // console.log("DAY_OF_PATTERN: ", rawArrayOfDays);
-  const arrayOfDays = rawArrayOfDays.sort((a, b) => {
-    const dayOrderA = sortOrder.indexOf(a);
-    const dayOrderB = sortOrder.indexOf(b);
-    return dayOrderA - dayOrderB;
-  });
-  const events = Object.entries(data.days);
-  console.log("PatternDetail:", events.length)
-  console.log("PatternI_d:", data.id)
+  // console.log("DATA_PATTERN: ", data);
 
-  const renderEvents = () =>{
-      const showEvent = []
-    for(let i=0; i<events.length; i++){
-        const day = events[i][0];
-        const getKey = Object.keys(events[i][1]);
-        console.log("Event In Loop", events[i]);
-        console.log("Day:", day);
-        console.log("Event:", getKey);
-    
-    //   console.log("Time:", eventTime);
-      for(let j=0; j<getKey.length; j++){
-        const eventTitle = events[i][1][getKey[j]].title;
-        const eventTime = events[i][1][getKey[j]].startTime;
-        console.log("EventKey:", getKey[j]);
-        console.log("Title:", eventTitle);
-        console.log("Time:", eventTime)
-        showEvent.push(
-          <View key={getKey[j]}>
-            <CardEvent
-              onPress={() => {
-                console.warn("Go to Event Detail Page.");
-              }}
-              title={eventTitle}
-              time={eventTime}
-              day={day}
-            />
-          </View>
-        );
+  const rawEvents = Object.entries(data.days);
+  // console.log("PatternDetail:", rawEvents.length);
+  // console.log("PatternId:", data.id);
 
-      }
+  const sortDataByDay = (data, type) => {
+    const sortOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    if (type === "event") {
+      return data.sort((a, b) => {
+        const dayOrderA = sortOrder.indexOf(a[0]);
+        const dayOrderB = sortOrder.indexOf(b[0]);
+        return dayOrderA - dayOrderB;
+      });
+    } else {
+      return data.sort((a, b) => {
+        const dayOrderA = sortOrder.indexOf(a);
+        const dayOrderB = sortOrder.indexOf(b);
+        return dayOrderA - dayOrderB;
+      });
     }
-    return showEvent;
+  };
+
+  const arrayOfDays = sortDataByDay(rawArrayOfDays, "pattern");
+  const events = sortDataByDay(rawEvents, "event");
+
+  const [renderCardEvent, setCardEvent] = useState([]);
+
+  const fetchData = async (eventId) => {
+    // console.log(`Call Fetch_Data by Agrument(${eventId})`);
+    try {
+      const q = query(eventRef, where(documentId(), "in", [eventId]));
+      const querySnapshot = await getDocs(q); // Execute the query
+      
+      if (!querySnapshot.empty) {
+        
+        const docData = querySnapshot.docs[0].data();
+        // console.log("DOCUMENT_LOG: ", docData);
+        return docData
+
+      } else {
+        console.log("Document does not exist!");
+        return null;
+      }
+    } catch (error) {
+      console.log("Error fetching document:", error);
+      return "error"
+    }
+  };
+
+  const renderEvents = async () => {
+    var uniqueEventId = [];
+    var fetchEvent = [];
+    var returnResult = []
+    for (let i = 0; i < events.length; i++) {
+      const day = events[i][0];
+      const getKey = events[i][1];
+
+      for (let j = 0; j < getKey.length; j++) {
+
+        if (uniqueEventId.includes(getKey[j]) === false) {
+          uniqueEventId.push(getKey[j]);
+          const handlerFetch = await fetchData(getKey[j]);
+
+          if (handlerFetch) {
+            fetchEvent.push({
+              key: getKey[j],
+              event: handlerFetch,
+            });
+
+            returnResult.push({
+              day: day,
+              event: handlerFetch,
+            });
+          } else {
+            console.log("Fetch data failed for ID:", getKey[j]);
+          }
+        } else {
+          const matchedEventKey = fetchEvent.find((item) => item.key === getKey[j]);
+          returnResult.push({
+            day: day,
+            event: matchedEventKey.event,
+          });
+        }     
+    }    
+  };
+    await Promise.all(returnResult);
+
+    setCardEvent(returnResult);
+    
+    return returnResult;
   }
+  
+  useEffect(() => {
+    const fetchDataAndRender = async () => {
+      const result = await renderEvents();
+      console.log("Result_UseEffect:", result);
+      // You can set the state here
+      setCardEvent(result);
+      console.log("EventUseState:", renderCardEvent)
+    };
 
-const usePattern=()=>{
-  const currentDay = new Date();
-  console.log(currentDay)
-  navigation.navigate("Dashboard", {
-    days: arrayOfDays,
-  });
-}
+    // Call the fetchDataAndRender function
+    fetchDataAndRender();
+  }, []);
 
+  const usePattern = () => {
+    const currentDay = new Date();
+    console.log(currentDay);
+    navigation.navigate("Dashboard", {
+      days: arrayOfDays,
+    });
+  };
 
-const deletePattern = async () => {
-  try {
-    const db = getFirestore(); // Make sure to initialize your Firestore instance
-    const documentRef = doc(db, "patterns", data.id);
-    await deleteDoc(documentRef);
-    navigation.navigate("Pattern")
-    console.log("Document deleted successfully");
-  } catch (error) {
-    console.error("Error deleting document: ", error.message);
-  }
-}
+  const deletePattern = async () => {
+    try {
+      const db = getFirestore(); // Make sure to initialize your Firestore instance
+      const documentRef = doc(db, "patterns", data.id);
+      await deleteDoc(documentRef);
+      navigation.navigate("Pattern");
+      console.log("Document deleted successfully");
+    } catch (error) {
+      console.error("Error deleting document: ", error.message);
+    }
+  };
 
   return (
-    // <LinearGradient
-    //   //   colors={["#2FBCBC", "#D8FFF8"]
-    //   colors={["#2FBCBC", "#D8FFF8"]}
-    //   start={{ x: 0, y: 0 }}
-    //   end={{ x: 1, y: 1 }}
-    //   style={styles.container}
-    // >
     <View style={[styles.container]}>
       <StatusBar hidden={true} />
       <View style={styles.container}>
@@ -144,7 +210,20 @@ const deletePattern = async () => {
               <View style={styles.line}></View>
             </View>
 
-            <View>{renderEvents()}</View>
+            <View>
+              {renderCardEvent.map((events, index) => (
+                <View key={index}>
+                  <CardEvent
+                    onPress={() => {
+                      console.warn("Go to Event Detail Page.");
+                    }}
+                    title={events.event.title}
+                    day={events.day}
+                    color={events.event.categories.bg}
+                  />
+                </View>
+              ))}
+            </View>
 
             <View
               style={{
@@ -181,7 +260,6 @@ const deletePattern = async () => {
         </ScrollView>
       </View>
     </View>
-    // </LinearGradient>
   );
 };
 

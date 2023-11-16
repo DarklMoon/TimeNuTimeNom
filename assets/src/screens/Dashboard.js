@@ -51,9 +51,6 @@ const Dashboard = ({ navigation, route }) => {
   //   console.log("THIS_IS_ROUTE: ", route.params);
   //   console.log("----------------------------------------");
   // } 
-  
-
-  
 
   useEffect(() => {
     if (isFocused) {
