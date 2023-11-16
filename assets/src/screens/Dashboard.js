@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 
 import HeaderComponent from "../components/HeaderComponent";
+import CardEvent from "../components/CardEvent";
 
 const Dashboard = ({ navigation, route }) => {
   const [selected, setSelected] = useState("");
@@ -28,12 +29,23 @@ const Dashboard = ({ navigation, route }) => {
   const [eventShow, setEventShow] = useState([]);
   const isFocused = useIsFocused();
   const { user } = useSelector(state=>state.user)
-  const [usePattern, setUsePattern] = ([]);
+  const [usePattern, setUsePattern] = useState([]);
 
-
+  // {
+    //   "2023-11-18":{
+      //     periods:[
+        //      {startingDay:false, endingDay:true, color:"red"}
+        //     ],
+        //   },
+        //   [selected]: { selected: true, selectedColor: "orange" },
+        // }
+        
+        
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+ const [markedDate, setMarkedDate] = useState([]);
 
   const fetchEvents = async () => {
     const q = query(eventRef, where("userId", "==", user.uid));
@@ -44,24 +56,59 @@ const Dashboard = ({ navigation, route }) => {
     });
     setEventShow(data);
     console.log("EVENT_SHOW_UP_IN_FETCH: ", eventShow);
+    console.log("SHOW_UP_DATA: ", data);
+    return data;
+
   };
 
-  // console.log("OUT_ROUTE_>>>: ", route.params)
-  // if (route.params){
-  //   console.log("THIS_IS_ROUTE: ", route.params);
-  //   console.log("----------------------------------------");
-  // } 
 
   useEffect(() => {
-    if (isFocused) {
-      fetchEvents();
+    const fetchAllEvent = async () => {
+      const result = await fetchEvents();
+      console.log("Result_UseEffect:", result);
+      setEventShow(result)
+      console.log("EVENT_SHOW: ", eventShow);
+
+      const transformedData = {};
+
+      eventShow.forEach((event) => {
+        const dateKey = event.startTime;
+
+        if (!transformedData[dateKey]) {
+          transformedData[dateKey] = {
+            periods: [
+              {
+                startingDay: false,
+                endingDay: true,
+                color: event.categories.bg,
+              },
+            ],
+          };
+        } else {
+
+          transformedData[dateKey].periods.push({
+            startingDay: false,
+            endingDay: true,
+            color: event.categories.bg,
+          });
+        }
+      });
+
+      transformedData.selected = {
+        selected: true,
+        selectedColor: "orange",
+      };
+
+      setMarkedDate(transformedData);
+      console.log("MARKED_DATE: ", markedDate);
     }
-    // console.log("ROUTE_DAYS_PATTERN: ", usePattern)
-    console.log("EVENT_SHOW_UP: ", eventShow);
-  }, [isFocused]);
+    
+    fetchAllEvent()
+    console.log("MARKED_DATE outside: ", markedDate);
+
+  }, []);
 
   useEffect(() => {
-    // This effect runs once when the component mounts
     const currentDay = new Date();
     const currentDayS = currentDay.toISOString().slice(0, 10);
     setSelected(currentDayS);
@@ -160,27 +207,7 @@ const Dashboard = ({ navigation, route }) => {
                   toggleModal();
                 }}
                 markingType="multi-period"
-                markedDates={{
-                  "2023-09-14": {
-                    periods: [
-                      { startingDay: false, endingDay: true, color: "#5f9ea0" },
-                      { startingDay: false, endingDay: true, color: "#ffa500" },
-                      { startingDay: true, endingDay: false, color: "#f0e68c" },
-                    ],
-                  },
-                  "2023-09-15": {
-                    periods: [
-                      { startingDay: true, endingDay: false, color: "#ffa500" },
-                      { color: "transparent" },
-                      {
-                        startingDay: false,
-                        endingDay: true,
-                        color: "#f0e68c",
-                      },
-                    ],
-                  },
-                  [selected]: { selected: true, selectedColor: "orange" },
-                }}
+                markedDates={markedDate}
               />
             </View>
             {/* Analyzis */}
@@ -265,10 +292,15 @@ const Dashboard = ({ navigation, route }) => {
                 }}
               /> */}
               <View style={styles.center}>
-                
+                <CardEvent
+                  onPress={() => {
+                    console.warn("Go to Event Detail Page.");
+                  }}
+                  title={"events.event.title"}
+                  day={"events.day"}
+                  color={"#5d6eff"}
+                />
               </View>
-              
-              
             </View>
           </ScrollView>
         </Modal>
@@ -309,7 +341,7 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: "white",
     paddingTop: 12,
-    paddingHorizontal: 12,
+    paddingHorizontal: 2,
     borderRadius: 10,
     minHeight: 500,
     paddingBottom: 20,

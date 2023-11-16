@@ -210,7 +210,7 @@ const PatternDetail =  ({ navigation, route }) => {
               <View style={styles.line}></View>
             </View>
 
-            <View>
+            <View style={{padding:10}}>
               {renderCardEvent.map((events, index) => (
                 <View key={index}>
                   <CardEvent

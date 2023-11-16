@@ -21,11 +21,12 @@ const CardEvent = ({ onPress, title, day, color }) => {
 
 const styles = StyleSheet.create({
   item: {
+
     padding: 15,
+    paddingHorizontal: 30,
     marginVertical: 8,
-    marginHorizontal: 16,
     borderRadius: 10,
-    backgroundColor: "black"
+    backgroundColor: "black",
   },
   title: {
     fontSize: 32,
