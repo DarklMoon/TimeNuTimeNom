@@ -37,6 +37,7 @@ import Category from "../screens/Category";
 import Setting from "../screens/SettingPage/Setting";
 import Profile from "../screens/SettingPage/Profile";
 import Resetpass from "../screens/SettingPage/Resetpass";
+import Helps from "../screens/SettingPage/Helps";
 import AllEvent from "../screens/AllEvent";
 import AddEvent from "../screens/AddEvent";
 import editEvent from "../../../screen/EditEvent";
@@ -282,8 +283,8 @@ export default function Navigator() {
         screenOptions={{ headerShown: false }}
       >
         <StackSettingNavigator.Screen name="Setting" component={Setting} />
-        <StackSettingNavigator.Screen name="Profile" component={Profile} />
         <StackSettingNavigator.Screen name="Reset" component={Resetpass} />
+        <StackSettingNavigator.Screen name="Helps" component={Helps} />
       </StackSettingNavigator.Navigator>
     );
   }

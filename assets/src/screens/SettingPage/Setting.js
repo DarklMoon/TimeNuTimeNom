@@ -95,54 +95,6 @@ const Setting = ({navigation}) => {
                 <View style={{ width: 300, height: 240, marginTop: 20 }}>
                   {/*เเต่ละfunction*/}
                   <TouchableOpacity
-                    style={{ width: "100%", height: 60, flexDirection: "row" }}
-                    onPress={() => {navigation.navigate("Profile")}}
-                  >
-                    {/*รูป*/}
-                    <View style={{ width: 60, height: "100%" }}>
-                      <Image
-                        source={require("../../../image/settingImage/profile(MDP).png")}
-                        style={{ flex: 1, width: undefined, height: undefined }}
-                      />
-                    </View>
-                    {/*function name*/}
-                    <View
-                      style={{
-                        height: "100%",
-                        width: 210,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          marginLeft: 15,
-                          fontWeight: "bold",
-                          fontSize: 20,
-                        }}
-                      >
-                        Profile
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        width: 30,
-                        height: "100%",
-                        justifyContent: "right",
-                      }}
-                    >
-                      <Image
-                        source={require("../../../image/settingImage/next(MDP).png")}
-                        style={{
-                          flex: 1,
-                          width: undefined,
-                          height: undefined,
-                          resizeMode: "contain",
-                        }}
-                      />
-                    </View>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
                     style={{
                       width: "100%",
                       height: 60,
@@ -202,6 +154,7 @@ const Setting = ({navigation}) => {
                       flexDirection: "row",
                       marginTop: 10,
                     }}
+                    onPress={() => {navigation.navigate("Helps")}}
                   >
                     {/*รูป*/}
                     <View style={{ width: 60, height: "100%" }}>
