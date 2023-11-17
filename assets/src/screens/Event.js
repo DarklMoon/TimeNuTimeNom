@@ -195,6 +195,7 @@ const Event = ({ navigation, route }) => {
         console.log("ADD DATA SUCCESSFUL");
       }
     }
+    fetchPattern();
   };
 
   const Eventhandler = () => {

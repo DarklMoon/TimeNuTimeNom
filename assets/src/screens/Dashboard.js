@@ -12,7 +12,7 @@ import Modal from "react-native-modal";
 import React, { useState, useEffect } from "react";
 import { Calendar, Agenda } from "react-native-calendars";
 import { LinearGradient } from "expo-linear-gradient";
-import { AntDesign } from "@expo/vector-icons";   
+import { AntDesign } from "@expo/vector-icons";
 import { addDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { eventRef } from "../config/firebase";
 import { useSelector } from "react-redux";
@@ -28,23 +28,22 @@ const Dashboard = ({ navigation, route }) => {
 
   const [isModalVisible, setModalVisible] = useState(false);
   const isFocused = useIsFocused();
-  const { user } = useSelector(state=>state.user)
+  const { user } = useSelector((state) => state.user);
   const [renderCardEvent, setCardEvent] = useState([]);
-  
+
   // {
-    //   "2023-11-18":{
-      //     periods:[
-      //      {startingDay:false, endingDay:true, color:"red"}
-      //     ],
-      //   },
-      //   [selected]: { selected: true, selectedColor: "orange" },
+  //   "2023-11-18":{
+  //     periods:[
+  //      {startingDay:false, endingDay:true, color:"red"}
+  //     ],
+  //   },
+  //   [selected]: { selected: true, selectedColor: "orange" },
   // }
-        
-        
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-        
+
   const [markedDate, setMarkedDate] = useState([]);
   const [selected, setSelected] = useState("");
   const [eventShow, setEventShow] = useState([]);
@@ -64,33 +63,32 @@ const Dashboard = ({ navigation, route }) => {
     console.log("SHOW_UP_DATA: ", data);
 
     return data;
-
   };
 
-const analyzeEvent = async () => {
-  const countPeriods = {};
-  setToDo(0);
-  setCompleted(0);
-  for (const date in markedDate) {
-    if (typeof markedDate[date] === "object" && markedDate[date].periods) {
-      const numberOfPeriods = markedDate[date].periods.length;
-      countPeriods[date] = numberOfPeriods;
+  const analyzeEvent = async () => {
+    const countPeriods = {};
+    setToDo(0);
+    setCompleted(0);
+    for (const date in markedDate) {
+      if (typeof markedDate[date] === "object" && markedDate[date].periods) {
+        const numberOfPeriods = markedDate[date].periods.length;
+        countPeriods[date] = numberOfPeriods;
 
-      if (new Date() > new Date(date)) {
-        setCompleted((prevCompleted) => prevCompleted + numberOfPeriods);
-        console.log(
-          `The current Date is later than the Past Date. Complete[${typeof completed}]`
-        );
-      } else {
-        setToDo((prevToDo) => prevToDo + numberOfPeriods);
-        console.log(
-          `The current Date is earlier than the Future Date. ToDo[${toDo}]-${date}`
-        );
+        if (new Date() > new Date(date)) {
+          setCompleted((prevCompleted) => prevCompleted + numberOfPeriods);
+          console.log(
+            `The current Date is later than the Past Date. Complete[${typeof completed}]`
+          );
+        } else {
+          setToDo((prevToDo) => prevToDo + numberOfPeriods);
+          console.log(
+            `The current Date is earlier than the Future Date. ToDo[${toDo}]-${date}`
+          );
+        }
       }
     }
-  }
-  console.log("COUNT_PERIODS: ", countPeriods);
-};
+    console.log("COUNT_PERIODS: ", countPeriods);
+  };
   useEffect(() => {
     const fetchAllEvent = async () => {
       const result = await fetchEvents();
@@ -115,7 +113,6 @@ const analyzeEvent = async () => {
             ],
           };
         } else {
-
           transformedData[dateKey].periods.push({
             startingDay: false,
             endingDay: true,
@@ -133,28 +130,31 @@ const analyzeEvent = async () => {
       console.log("MARKED_DATE: ", markedDate);
 
       await analyzeEvent();
+    };
 
-    }
-    
-    fetchAllEvent()
+    fetchAllEvent();
     console.log("MARKED_DATE outside: ", markedDate);
-
 
     const currentDay = new Date();
     const currentDayS = currentDay.toISOString().slice(0, 10);
     setSelected(currentDayS);
-
-
   }, [isFocused]);
-
 
   const rawSelectdDay = new Date(selected);
   console.log("SELECTED:", selected);
 
   const dayNumber = rawSelectdDay.getDay();
-  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",];
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const dayName = daysOfWeek[dayNumber];
-  console.log("CONVERT:", dayName); 
+  console.log("CONVERT:", dayName);
 
   return (
     <LinearGradient
@@ -328,6 +328,10 @@ const analyzeEvent = async () => {
                     <View key={index}>
                       <CardEvent
                         onPress={() => {
+                          navigation.navigate("Detail", {
+                            prev: "Dashboard",
+                            data: events,
+                          });
                           console.warn(
                             `Go to Event Detail Page. Attached Key [${events.id}]`
                           );
@@ -335,7 +339,7 @@ const analyzeEvent = async () => {
                         title={events.title}
                         color={events.categories.bg}
                         time={events.startTime}
-                        length= {50}
+                        length={50}
                       />
                     </View>
                   ))}

@@ -52,16 +52,24 @@ const StackLoginNavigator = createNativeStackNavigator();
 const StackSettingNavigator = createNativeStackNavigator();
 
 export default function Navigator() {
-  const { user } = useSelector(state=> state.user)
+  const { user } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
-  onAuthStateChanged(auth, u=>{
-    console.log("GOT_USER: ", u)
-    dispatch(setUser(u))
-
-  })
+  onAuthStateChanged(auth, (u) => {
+    console.log("GOT_USER: ", u);
+    dispatch(setUser(u));
+  });
   // const { user } = useAuth();
+
+  function DashboardDetail() {
+    return (
+      <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
+        <StackLoginNavigator.Screen name="Dashboard" component={Dashboard} />
+        <StackLoginNavigator.Screen name="Detail" component={DetailEvent} />
+      </StackLoginNavigator.Navigator>
+    );
+  }
 
   function AboutEvent() {
     return (
@@ -72,20 +80,18 @@ export default function Navigator() {
       </StackLoginNavigator.Navigator>
     );
   }
-  
 
-
-function AddEventNavigator() {
-  return (
-    <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
-      <StackLoginNavigator.Screen name="Category" component={Category} />
-      <StackLoginNavigator.Screen name="Event" component={Event} />
-      <StackLoginNavigator.Screen name="addEvent" component={AddEvent} />
-      <StackLoginNavigator.Screen name="EditEvent" component={editEvent} />
-      <StackLoginNavigator.Screen name="Detail" component={DetailEvent} />
-    </StackLoginNavigator.Navigator>
-  );
-}
+  function AddEventNavigator() {
+    return (
+      <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
+        <StackLoginNavigator.Screen name="Category" component={Category} />
+        <StackLoginNavigator.Screen name="Event" component={Event} />
+        <StackLoginNavigator.Screen name="addEvent" component={AddEvent} />
+        <StackLoginNavigator.Screen name="EditEvent" component={editEvent} />
+        <StackLoginNavigator.Screen name="Detail" component={DetailEvent} />
+      </StackLoginNavigator.Navigator>
+    );
+  }
 
   function PatternNavigator() {
     return (
@@ -108,6 +114,13 @@ function AddEventNavigator() {
             title: "PatternDetail",
           }}
         />
+        <StackPatternNavigator.Screen
+          name="Detail"
+          component={DetailEvent}
+          options={{
+            title: "Detail",
+          }}
+        />
       </StackPatternNavigator.Navigator>
     );
   }
@@ -117,7 +130,7 @@ function AddEventNavigator() {
       <BottmTapNavigator.Navigator screenOptions={{ headerShown: false }}>
         <BottmTapNavigator.Screen
           name="Dashboard"
-          component={Dashboard}
+          component={DashboardDetail}
           options={{
             tabBarIcon: ({ color, size }) => {
               return (
@@ -240,7 +253,7 @@ function AddEventNavigator() {
         />
       </DrawerNavigator.Navigator>
     );
-}
+  }
 
   function LoginNavigator() {
     return (

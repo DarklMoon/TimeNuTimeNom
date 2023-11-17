@@ -162,7 +162,7 @@ const AllEvent = ({ navigation, route }) => {
       hour: "2-digit",
       minute: "2-digit",
     });
-    
+
     if (checkTime == "E") {
       console.warn("A Enddtime picked: ", Time_formatted);
       setEndtime(Time_formatted);
@@ -292,8 +292,8 @@ const AllEvent = ({ navigation, route }) => {
         }}
       >
         <View style={{ flexDirection: "row" }}>
-          <Text style={{ fontSize: 16, marginRight: 10 }}>{data.endTime}</Text>
-          <Text style={{ fontSize: 16 }}>19/9/65</Text>
+          <Text style={{ fontSize: 16, marginRight: 10 }}>{data.startDate}</Text>
+          <Text style={{ fontSize: 16 }}>{data.startTime}</Text>
         </View>
         <Text style={styles.title}>{data.title}</Text>
       </TouchableOpacity>
@@ -739,6 +739,7 @@ const AllEvent = ({ navigation, route }) => {
                   <Item
                     datas={item}
                     title={item.title}
+                    startDate={item.startDate}
                     startTime={item.startTime}
                     endTime={item.endTime}
                     description={item.description}
