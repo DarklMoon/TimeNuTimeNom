@@ -22,11 +22,19 @@ import ColorPicker, {
   HueSlider,
 } from "reanimated-color-picker";
 import { EvilIcons } from "@expo/vector-icons";
+import { useEffect } from "react";
+import { categoryRef } from "../config/firebase";
+import { useSelector } from "react-redux";
+import { addDoc, getDocs, query, where } from "firebase/firestore";
 
 const Category = ({ navigation }) => {
   //Input
-  const [CatagoryName, setCatagoryName] = useState("");
+  const [CatagoryName, setCatagoryName] = useState("_");
   const [ColorName, setColorName] = useState("red");
+
+  const [State, setState] = useState(true);
+  const [Event, setEvent] = useState([]);
+  const { user } = useSelector((state) => state.user);
 
   //test search
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,6 +55,12 @@ const Category = ({ navigation }) => {
     "#b152ff",
   ]);
 
+  //modal
+  const [modalVisible, setModalVisible] = useState(false);
+
+  //list of Catagory
+  const [data, setData] = useState([]);
+  console.log(data);
   const onSelectColor = ({ hex }) => {
     // do something with the selected color.
     setColorName(hex);
@@ -54,32 +68,51 @@ const Category = ({ navigation }) => {
     console.log(ColorName);
   };
 
-  //modal
-  const [modalVisible, setModalVisible] = useState(false);
+  const handleCreateEvent = async () => {
+    if (Event) {
+      let doc = await addDoc(categoryRef, {
+        categoryName: Event.categoryName,
+        backgroundColor: Event.backgroundColor,
+        userId: user.uid,
+      });
+      if (doc && doc.id) {
+        console.log("ADD DATA SUCCESSFUL");
+      }
+    }
+  };
 
-  //list of Catagory
-  const [data, setData] = useState([]);
+  //firebase
+  const fetchCategory = async () => {
+    const q = query(categoryRef, where("userId", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    let data = [];
+    querySnapshot.forEach((doc) => {
+      data.push({ ...doc.data(), id: doc.id });
+    });
 
-  const addCatagory = () => {
+    setData(data);
+    console.log(data);
+  };
+
+  const Eventhandler = () => {
     let checkTitle = true;
     let checkColor = true;
-    const newCatagory = {
-      title: CatagoryName,
+    const CatagoryEvent = {
+      categoryName: CatagoryName,
       backgroundColor: ColorName,
+      userId: user.uid,
     };
-    // console.log(newCatagory.backgroundColor)
-    if (newCatagory.title != "") {
+    if (CatagoryEvent.categoryName != "") {
       const fillterCatagory = data.filter((item) => {
-        // console.log(item.title == newCatagory.title);
-        if (item.title == newCatagory.title) {
-          checkTitle = false;
+        if (item.title == CatagoryEvent.categoryName) {
+          checkTitle = feralse;
           return false;
         } else {
           return true;
         }
       });
       const fillterColor = data.filter((item) => {
-        if (item.backgroundColor == newCatagory.backgroundColor) {
+        if (item.backgroundColor == CatagoryEvent.backgroundColor) {
           checkColor = false;
           return false;
         } else {
@@ -93,21 +126,43 @@ const Category = ({ navigation }) => {
         alert("This color is already used");
       } else {
         console.log("added");
-        setData([...data, newCatagory]);
         checkTitle = !checkTitle;
         checkColor = !checkColor;
-
         setModalVisible(!modalVisible);
       }
     } else {
       alert("Please Fill Catagory Name");
     }
+    console.log(Event);
+    setEvent(CatagoryEvent);
+    setState(true);
+    clearInput();
+  };
+
+  useEffect(() => {
+    fetchCategory();
+    setState(false);
+  }, [State]);
+
+  useEffect(() => {
+    if (State == true) {
+      handleCreateEvent();
+    }
+    setState(false);
+  }, [State]);
+
+  const clearInput = () => {
+    setCatagoryName("");
+    setColorName("red");
   };
 
   const Item = (data) => (
     <TouchableOpacity
       onPress={() => {
-        data.onSelect();
+        navigation.navigate("Event", {
+          prev: "Category",
+          Category: data.category,
+        });
       }}
     >
       <View
@@ -173,7 +228,10 @@ const Category = ({ navigation }) => {
               <View style={{ width: 200, flexDirection: "row" }}>
                 <Pressable
                   style={[styles.buttonClose, { marginRight: 10 }]}
-                  onPress={() => addCatagory()}
+                  onPress={() => {
+                    // addCatagory();
+                    Eventhandler();
+                  }}
                 >
                   <Text style={styles.textStyle}>Add Categories</Text>
                 </Pressable>
@@ -237,24 +295,19 @@ const Category = ({ navigation }) => {
                   }}
                 />
               </View>
-              <FlatList
-                style={{ marginBottom: 130 }}
-                data={data}
-                renderItem={({ item }) => (
-                  <Item
-                    onSelect={() => {
-                      navigation.navigate("Event", {
-                        title: item.title,
-                        background: item.backgroundColor,
-                        Category: item,
-                      });
-                    }}
-                    backgroundColor={item.backgroundColor}
-                    title={item.title}
-                  />
-                )}
-                // keyExtractor={(item) => item.id}
-              />
+
+                <FlatList
+                  style={{ marginBottom: 130 }}
+                  data={data}
+                  renderItem={({ item }) => (
+                    <Item
+                      category ={item}
+                      backgroundColor={item.backgroundColor}
+                      title={item.categoryName}
+                    />
+                  )}
+                  keyExtractor={(item) => item.id}
+                />
             </View>
           </View>
         </View>
@@ -302,7 +355,7 @@ const styles = StyleSheet.create({
     // width: 400,
     // height: 550,
     margin: 8,
-    marginTop:50,
+    marginTop: 50,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,

@@ -66,11 +66,11 @@ export default function Navigator() {
 
 function AddEventNavigator() {
   return (
-    <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
+    <StackLoginNavigator.Navigator screenOptions={{ headerShown: true }}>
       <StackLoginNavigator.Screen name="Category" component={Category} />
       <StackLoginNavigator.Screen name="Event" component={Event} />
-      {/* <StackLoginNavigator.Screen name="addEvent" component={addevent} /> */}
-      {/* <StackLoginNavigator.Screen name="EditEvent" component={EditEvent} /> */}
+      <StackLoginNavigator.Screen name="addEvent" component={AddEvent} />
+      <StackLoginNavigator.Screen name="EditEvent" component={editEvent} />
     </StackLoginNavigator.Navigator>
   );
 }

@@ -2,7 +2,9 @@ import EVENT_DATA from "../data/EventData";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 // import library ที่จำเป็น
+
 import {
+  Dimensions,
   FlatList,
   Modal,
   Pressable,
@@ -17,14 +19,30 @@ import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import { eventRef } from "../config/firebase";
-import { addDoc } from "firebase/firestore";
+import { Entypo } from "@expo/vector-icons";
+import {
+  Firestore,
+  addDoc,
+  deleteDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import initDB from "../config/firebase";
 import { useSelector } from "react-redux";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useEffect } from "react";
-// RNCalendarEvents.checkPermissions((readOnly = false));
+import firebase from "@react-native-firebase/firestore";
+import { it } from "date-fns/locale";
+import { Button } from "react-native-paper";
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import Geocoder from "react-native-geocoding";
+import { TouchableOpacity } from "react-native-gesture-handler";
+// import firebase from "../config/firebase";
 
 const AllEvent = ({ navigation, route }) => {
-  // console.log(EVENT_DATA);
+  Geocoder.init("AIzaSyDhf8S__daUXzZmM7SbeiMXaU_XcfhIu4M");
+
   const [Name, setName] = useState("");
   // const [Name, sestName] = useState("");
   const [description, setDescription] = useState("");
@@ -37,10 +55,59 @@ const AllEvent = ({ navigation, route }) => {
   const [Enddate, setEnddate] = useState("0000-00-00");
   const [SorE, setSorE] = useState("");
 
-  const [Event, setEvent] = useState([]);
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [Starttime, setStarttime] = useState("00.00");
+  const [Endtime, setEndtime] = useState("00.00");
+  const [checkTime, setcheckTime] = useState("");
 
-  const [State, setState] = useState(false);
-  // console.log(Event);
+  const [Event, setEvent] = useState([]);
+  const [Allevent, setAllevent] = useState([]);
+
+  const [State, setState] = useState(true);
+
+  const [MapVisible, setMapVisible] = useState(false);
+  const [longitude, setlongitude] = useState("");
+  const [latitude, setlatitude] = useState("");
+  const [location, setLocation] = useState("");
+  const [prelocation, setpreLocation] = useState("");
+
+  const { width, height } = Dimensions.get("window");
+  const Aspect = width / height;
+  const defalut_Position = {
+    latitude: 13.74682616342151,
+    longitude: 100.5744206160307,
+    latitudeDelta: 0.5,
+    longitudeDelta: Aspect * 0.5,
+  };
+  const setlocation = (item) => {
+    setlatitude(item.latitude);
+    setlongitude(item.longitude);
+    console.log("Location Address:", prelocation);
+  };
+
+  Geocoder.from(latitude, longitude)
+    .then((json) => {
+      const address = json.results[0].formatted_address;
+      setpreLocation(address);
+    })
+    .catch((error) => console.log(error));
+
+  //firebase
+  const fetchPattern = async () => {
+    const q = query(eventRef, where("userId", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    let data = [];
+    querySnapshot.forEach((doc) => {
+      data.push({ ...doc.data(), id: doc.id });
+    });
+    setAllevent(data);
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchPattern();
+    setState(false);
+  }, [State]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const handleChange = (text) => {
@@ -55,6 +122,39 @@ const AllEvent = ({ navigation, route }) => {
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
+  };
+
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+  const [markerPosition, setMarkerPosition] = useState(null);
+
+  const handleMapPress = (event) => {
+    const { coordinate } = event.nativeEvent;
+    setMarkerPosition(coordinate);
+  };
+
+  const handleTimeConfirm = (time) => {
+    const date = new Date(time);
+    const Time_formatted = date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    if (checkTime == "E") {
+      console.warn("A Enddtime picked: ", Time_formatted);
+      setEndtime(Time_formatted);
+    }
+    if (checkTime == "S") {
+      console.warn("A Starttime picked: ", Time_formatted);
+      setStarttime(Time_formatted);
+    }
+    hideTimePicker();
   };
 
   const handleConfirm = (date) => {
@@ -76,8 +176,9 @@ const AllEvent = ({ navigation, route }) => {
         title: Event.title,
         categories: Event.categories,
         place: Event.place,
-        startTime: Event.startTime,
-        endTime: Event.endTime,
+        startDate: Event.startDate,
+        endDate: Event.endDate,
+        startTime: Event.StartTime,
         description: Event.description,
         userId: user.uid,
       });
@@ -95,17 +196,17 @@ const AllEvent = ({ navigation, route }) => {
         Name: "WorkOut",
         bg: "#ffce47",
       },
-      place: "",
-      startTime: Startdate,
-      endTime: Enddate,
+      place: location,
+      startDate: Startdate,
+      endDate: Enddate,
+      StartTime: Starttime,
       description: description,
       userId: user.uid,
     };
-    setEvent(...Event, dataEvent);
+    console.log(Event);
+    setEvent(dataEvent);
     setState(true);
-    // console.log(Event);
-
-    console.log("5555");
+    clearInput();
   };
 
   useEffect(() => {
@@ -115,11 +216,16 @@ const AllEvent = ({ navigation, route }) => {
     setState(false);
   }, [State]);
 
-  const removeFirstObject = (item, Index) => {
-    console.log(Index);
-    const newList = Event.splice(Index, 1);
-    setEvent(newList);
+  const clearInput = () => {
+    setName("");
+    setStartdate("0000-00-00");
+    setEnddate("0000-00-00");
+    setStarttime("00.00");
+    setLocation("");
+    setDescription("");
   };
+
+  const removeFirstObject = async (item) => {};
 
   const Item = (data) => (
     <View
@@ -152,7 +258,9 @@ const AllEvent = ({ navigation, route }) => {
           marginLeft={20}
           size={24}
           color="black"
-          onPress={removeFirstObject}
+          onPress={() => {
+            removeFirstObject(data.datas);
+          }}
         />
       </View>
     </View>
@@ -177,7 +285,7 @@ const AllEvent = ({ navigation, route }) => {
         >
           <View style={styles.centeredView}>
             <View style={[styles.AddEventsite]}>
-              <View style={{ margin: 10 }}>
+              <View style={{ margin: 10, marginLeft: 15 }}>
                 <TextInput
                   style={styles.Input}
                   placeholder="Name"
@@ -195,121 +303,249 @@ const AllEvent = ({ navigation, route }) => {
                   }}
                 ></TextInput> */}
                 {/* <TextInput style={styles.Input} placeholder="Place"></TextInput> */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <Pressable
-                    style={{ flexDirection: "row" }}
-                    onPress={() => {
-                      showDatePicker();
-                      setSorE("s");
-                    }}
+                <View style={{ marginTop: 10 }}>
+                  <Text
+                    style={{ fontSize: 20, marginBottom: 10, marginLeft: 20 }}
                   >
-                    <Text style={{ marginTop: 5 }}>{Startdate}</Text>
-                    <AntDesign
-                      style={{ marginLeft: 5 }}
-                      name="calendar"
-                      size={28}
-                      color="black"
-                    />
-                  </Pressable>
-                  <Pressable
-                    style={{ flexDirection: "row", marginLeft: 5 }}
-                    onPress={() => {
-                      showDatePicker();
-                      setSorE("e");
-                    }}
-                  >
-                    <Text style={{ marginTop: 5 }}>{Enddate}</Text>
-                    <AntDesign
-                      style={{ marginLeft: 5 }}
-                      name="calendar"
-                      size={28}
-                      color="orange"
-                    />
-                  </Pressable>
-                  <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    onConfirm={handleConfirm}
-                    onCancel={hideDatePicker}
-                  />
-                </View>
-                <View style={{ justifyContent: "flex-start" }}>
-                  <Text style={{ margin: 15, fontSize: 22, marginBottom: -5 }}>
-                    Description
+                    Date & Time
                   </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Text style={{ fontSize: 16 }}>Start</Text>
+                    <Text style={{ fontSize: 16 }}>End</Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <Pressable
+                      style={{ flexDirection: "row" }}
+                      onPress={() => {
+                        showDatePicker();
+                        setSorE("s");
+                      }}
+                    >
+                      <Text style={{ marginTop: 5 }}>{Startdate}</Text>
+                      <AntDesign
+                        style={{ marginLeft: 5 }}
+                        name="calendar"
+                        size={28}
+                        color="black"
+                      />
+                    </Pressable>
+                    <Pressable
+                      style={{ flexDirection: "row", marginLeft: 5 }}
+                      onPress={() => {
+                        showDatePicker();
+                        setSorE("e");
+                      }}
+                    >
+                      <Text style={{ marginTop: 5 }}>{Enddate}</Text>
+                      <AntDesign
+                        style={{ marginLeft: 5 }}
+                        name="calendar"
+                        size={28}
+                        color="orange"
+                      />
+                    </Pressable>
+                    <DateTimePickerModal
+                      isVisible={isDatePickerVisible}
+                      mode="date"
+                      onConfirm={handleConfirm}
+                      onCancel={hideDatePicker}
+                    />
+                  </View>
 
-                  <View>
-                    <TextInput
-                      style={{
-                        margin: 15,
-                        borderWidth: 0.5,
-                        justifyContent: "flex-start",
-                        fontSize: 18,
+                  {/* Time */}
+                  <View
+                    style={{
+                      marginTop: 30,
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <Pressable
+                      style={{ flexDirection: "row" }}
+                      onPress={() => {
+                        showTimePicker();
+                        setcheckTime("S");
                       }}
-                      placeholder="description"
-                      multiline={true}
-                      numberOfLines={5}
-                      value={description}
-                      onChangeText={(input) => {
-                        setDescription(input);
+                    >
+                      <Text style={{ marginTop: 5 }}>{Starttime}</Text>
+                      <AntDesign
+                        style={{ marginLeft: 5 }}
+                        name="clockcircle"
+                        size={28}
+                        color="black"
+                      />
+                    </Pressable>
+                    <Pressable
+                      style={{ flexDirection: "row", marginLeft: 5 }}
+                      onPress={() => {
+                        showTimePicker();
+                        setcheckTime("E");
                       }}
+                    >
+                      <Text style={{ marginTop: 5 }}>{Endtime}</Text>
+                      <AntDesign
+                        style={{ marginLeft: 5 }}
+                        name="clockcircle"
+                        size={28}
+                        color="orange"
+                      />
+                    </Pressable>
+                    <DateTimePickerModal
+                      isVisible={isTimePickerVisible}
+                      mode="time"
+                      onConfirm={handleTimeConfirm}
+                      onCancel={hideTimePicker}
                     />
                   </View>
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    height: 200,
-                    justifyContent: "center",
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <View style={{}}>
-                    <Pressable
-                      style={[
-                        styles.buttons,
-                        {
-                          backgroundColor: "#d9d9d9",
-                          marginRight: 15,
-                          paddingLeft: 20,
-                          paddingRight: 30,
-                          elevation: 5,
-                        },
-                      ]}
-                      onPress={() => {
-                        setModalVisible(!modalVisible);
-                      }}
-                    >
-                      <Text style={{ fontSize: 22 }}>Canceled</Text>
-                    </Pressable>
-                  </View>
-                  <View>
-                    <Pressable
-                      style={[
-                        styles.buttons,
-                        { backgroundColor: "red", elevation: 5 },
-                      ]}
-                      onPress={() => {
-                        Eventhandler();
-                        setState(true);
-                        setModalVisible(!modalVisible);
-                      }}
-                    >
-                      <Text
+
+                <View style={{ marginLeft: 20 }}>
+                  <TouchableOpacity
+                    style={{
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Text style={{ fontSize: 20, marginBottom: 10 }}>Map</Text>
+                    <View style={{ flexDirection: "row" }}>
+                      <Entypo
                         style={{
-                          fontSize: 22,
-                          paddingLeft: 30,
-                          paddingRight: 30,
+                          borderWidth: 1,
+                          shadowColor: "black",
+                          padding: 4,
+                          paddingLeft: 15,
+                          paddingRight: 15,
+                          borderRadius: 10,
+                          marginRight: 10,
+                        }}
+                        name="map"
+                        size={30}
+                        color="black"
+                        onPress={() => {
+                          setMapVisible(!MapVisible);
+                        }}
+                      />
+                      <View></View>
+                      <Pressable
+                        style={{
+                          margin: 4,
+                          borderWidth: 1,
+                          borderColor: "#1EE85F",
+                          borderRadius: 10,
+                          padding: 4,
+                          paddingLeft: 15,
+                          paddingRight: 15,
+                          backgroundColor: "#1EE85F",
+                          shadowColor: "black",
+                          shadowOffset: { width: 2, height: 2 },
+                          shadowOpacity: 0.5,
+                          shadowRadius: 5,
+                          elevation: 5,
+                        }}
+                        onPress={() => {
+                          setLocation("");
                         }}
                       >
-                        Apply
-                      </Text>
-                    </Pressable>
+                        <Text style={{ fontSize: 16 }}>reset</Text>
+                      </Pressable>
+                    </View>
+                  </TouchableOpacity>
+                  <Text style={{ marginRight: 10, fontSize: 16 }}>
+                    {location}
+                  </Text>
+                </View>
+                <TouchableOpacity>
+                  <View style={{ justifyContent: "flex-start" }}>
+                    <Text
+                      style={{ margin: 15, fontSize: 22, marginBottom: -5 }}
+                    >
+                      Description
+                    </Text>
+
+                    <View>
+                      <TextInput
+                        style={{
+                          margin: 15,
+                          borderWidth: 0.5,
+                          justifyContent: "flex-start",
+                          fontSize: 18,
+                        }}
+                        placeholder="description"
+                        multiline={true}
+                        numberOfLines={5}
+                        value={description}
+                        onChangeText={(input) => {
+                          setDescription(input);
+                        }}
+                      />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    height: Aspect * 200,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                    }}
+                  >
+                    <View style={{}}>
+                      <Pressable
+                        style={[
+                          styles.buttons,
+                          {
+                            backgroundColor: "#d9d9d9",
+                            marginRight: 15,
+                            paddingLeft: 20,
+                            paddingRight: 20,
+                            elevation: 5,
+                          },
+                        ]}
+                        onPress={() => {
+                          setModalVisible(!modalVisible);
+                          clearInput();
+                        }}
+                      >
+                        <Text style={{ fontSize: 22 }}>Canceled</Text>
+                      </Pressable>
+                    </View>
+                    <View>
+                      <Pressable
+                        style={[
+                          styles.buttons,
+                          { backgroundColor: "red", elevation: 5 },
+                        ]}
+                        onPress={() => {
+                          Eventhandler();
+                          setState(true);
+                          setModalVisible(!modalVisible);
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 22,
+                            paddingLeft: 30,
+                            paddingRight: 30,
+                          }}
+                        >
+                          Apply
+                        </Text>
+                      </Pressable>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -317,6 +553,83 @@ const AllEvent = ({ navigation, route }) => {
           </View>
         </Modal>
         {/* modal */}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={MapVisible}
+          onRequestClose={() => {
+            setModalVisible(!MapVisible);
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
+              <MapView
+                style={styles.map}
+                provider={PROVIDER_GOOGLE}
+                initialRegion={defalut_Position}
+                onPress={(e) => {
+                  setlocation(e.nativeEvent.coordinate);
+                  handleMapPress(e);
+                }}
+              >
+                {markerPosition && (
+                  <Marker
+                    style={{}}
+                    coordinate={markerPosition}
+                    title={prelocation}
+                  ></Marker>
+                )}
+              </MapView>
+              <View
+                style={{
+                  margin: 10,
+                  marginTop: 20,
+                  justifyContent: "flex-start",
+                  backgroundColor: "white",
+                  borderRadius: 15,
+                  shadowColor: "black",
+                  shadowOffset: { width: 2, height: 2 },
+                  shadowOpacity: 0.5,
+                  shadowRadius: 5,
+                  elevation: 5,
+                }}
+              >
+                <Text style={{ fontSize: 18, margin: 5 }}>{prelocation}</Text>
+              </View>
+              <View style={{ flex: 1, justifyContent: "flex-end" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    marginBottom: "20%",
+                  }}
+                >
+                  <Pressable
+                    style={{
+                      backgroundColor: "red",
+                      padding: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      borderRadius: 15,
+                      shadowColor: "black",
+                      shadowOffset: { width: 2, height: 2 },
+                      shadowOpacity: 0.5,
+                      shadowRadius: 5,
+                      elevation: 5,
+                    }}
+                    onPress={() => {
+                      setMapVisible(!MapVisible);
+                      setLocation(prelocation);
+                    }}
+                  >
+                    <Text style={{ fontSize: 20 }}>Go Back</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
 
         {/* searchbar */}
         <View style={styles.searchContainer}>
@@ -364,9 +677,10 @@ const AllEvent = ({ navigation, route }) => {
               </View>
               <FlatList
                 style={{ marginBottom: 130 }}
-                data={Event}
+                data={Allevent}
                 renderItem={({ item }) => (
                   <Item
+                    datas={item}
                     title={item.title}
                     startTime={item.startTime}
                     endTime={item.endTime}
@@ -478,111 +792,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
   },
-});
-
-export default AllEvent;
-
-// import EVENT_DATA from "../data/EventData";
-// import { Text, View, Button, Pressable } from "react-native";
-// import { LinearGradient } from "expo-linear-gradient";
-// import { StyleSheet } from "react-native";
-// import React, { useState } from "react";
-// import { AntDesign } from "@expo/vector-icons";
-// import { set } from "date-fns";
-// import { FlatList } from "react-native";
-
-// const AllEvent = ({ navigation, route }) => {
-//   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-//   const [Startdate, setStartdate] = useState("0000-00-00");
-//   const [Enddate, setEnddate] = useState("0000-00-00");
-//   const [SorE, setSorE] = useState("");
-
-//   const showDatePicker = () => {
-//     setDatePickerVisibility(true);
-//   };
-
-//   const hideDatePicker = () => {
-//     setDatePickerVisibility(false);
-//   };
-
-//   const handleConfirm = (date) => {
-//     const formattedDate = date.toISOString().slice(0, 10);
-//     if (SorE == "e") {
-//       console.warn("A Enddate picked: ", formattedDate);
-//       setEnddate(formattedDate);
-//     }
-//     if (SorE == "s") {
-//       console.warn("A Startdate picked: ", formattedDate);
-//       setStartdate(formattedDate)
-//     }
-//     hideDatePicker();
-//   };
-//   //   const test = ()=>{
-//   //     console.log(EVENT_DATA[0].event00);
-//   //   }
-// return (
-//   <LinearGradient
-//     colors={["#2FBCBC", "#D8FFF8"]}
-//     start={{ x: 0, y: 0 }}
-//     end={{ x: 1, y: 1 }}
-//     style={styles.root}
-//   >
-//     <View>
-//       <Pressable
-//         onPress={() => {
-//           showDatePicker();
-//           setSorE("s");
-//         }}
-//       >
-//         <AntDesign name="calendar" size={24} color="black" />
-//       </Pressable>
-//       <Pressable
-//         onPress={() => {
-//           showDatePicker();
-//           setSorE("e");
-//         }}
-//       >
-//         <AntDesign name="calendar" size={24} color="orange" />
-//       </Pressable>
-//       <DateTimePickerModal
-//         isVisible={isDatePickerVisible}
-//         mode="date"
-//         onConfirm={handleConfirm}
-//         onCancel={hideDatePicker}
-//       />
-//       <View>
-//           <Text style={{color:'red'}}>{Startdate}</Text>
-//           <Text style={{color:'blue'}}>{Enddate}</Text>
-//       </View>
-{
-  /* <FlatList
-                style={{ marginBottom: 130 }}
-                data={EVENT_DATA}
-            
-                renderItem={({ item }) => (
-                  <View>
-                    <Text>{item.title}</Text>
-                  </View>
-                  // <Item
-                  //   backgroundColor={item.backgroundColor}
-                  //   description={item.description}
-                  //   Name={item.Name}
-                  // />
-                )}
-                keyExtractor={(item) => item.id}
-              /> */
-}
-{
-  /* </View>
-    </LinearGradient>
-  );
-};
-export default AllEvent;
-const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    // alignItems: "center",
   },
-}); */
-}
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
+export default AllEvent;
