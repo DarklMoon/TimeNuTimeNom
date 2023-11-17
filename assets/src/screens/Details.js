@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import HeaderComponent from "../components/HeaderComponent";
 
 const DetailEvent = ({ route, navigation }) => {
   const detail = route.params.data;
@@ -12,6 +13,7 @@ const DetailEvent = ({ route, navigation }) => {
       end={{ x: 1, y: 1 }}
       style={styles.root}
     >
+    <HeaderComponent navigation={navigation} iconLeft={"arrow-back"} />
       <View style={{ flex: 1, margin: 20 }}>
         <View style={[styles.TopView, {}]}>
           <View style={{ marginTop: 50 }}>

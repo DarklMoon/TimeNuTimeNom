@@ -41,8 +41,7 @@ import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Geocoder from "react-native-geocoding";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useIsFocused } from "@react-navigation/native";
-
-
+import HeaderComponent from "../components/HeaderComponent";
 
 const Event = ({ navigation, route }) => {
   const category = route.params.Category;
@@ -299,6 +298,7 @@ const Event = ({ navigation, route }) => {
       end={{ x: 1, y: 1 }}
       style={styles.root}
     >
+      
       <View style={styles.root}>
         {/* modal */}
         <Modal
@@ -656,7 +656,6 @@ const Event = ({ navigation, route }) => {
             </View>
           </View>
         </Modal>
-
         {/* searchbar */}
         <View style={styles.searchContainer}>
           <TextInput
