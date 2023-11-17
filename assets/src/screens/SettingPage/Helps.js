@@ -21,12 +21,12 @@ const Helps = () => {
           <View style={{width:'100%', height:250, marginTop:50, flexDirection:'row'}}>
             <View style={{height:'100%', width:140}}>
                 <Image
-                 source={require('./assets/Dashboard.png')}
+                 source={require('../../../image/Helps/Dashboard.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
             <View style={{ height:'100%', width:140, marginLeft:40}}>
                 <Image
-                 source={require('./assets/Calendarpage.png')}
+                 source={require('../../../image/Helps/Calendarpage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
 
@@ -36,7 +36,7 @@ const Helps = () => {
           <View style={{width:'100%', height:250, marginTop:50, flexDirection:'row', justifyContent:'center'}}>
             <View style={{height:'100%', width:140}}>
                 <Image
-                 source={require('./assets/EventDetailpage.png')}
+                 source={require('../../../image/Helps/EventDetailpage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
 
@@ -47,12 +47,12 @@ const Helps = () => {
           <View style={{width:'100%', height:250, marginTop:50, flexDirection:'row'}}>
             <View style={{height:'100%', width:140}}>
                 <Image
-                 source={require('./assets/Catagorypage.png')}
+                 source={require('../../../image/Helps/Catagorypage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
             <View style={{ height:'100%', width:140, marginLeft:40}}>
                 <Image
-                 source={require('./assets/Addcatagorypage.png')}
+                 source={require('../../../image/Helps/Addcatagorypage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
           </View>
@@ -61,12 +61,12 @@ const Helps = () => {
           <View style={{width:'100%', height:250, marginTop:50, flexDirection:'row'}}>
             <View style={{height:'100%', width:140}}>
                 <Image
-                 source={require('./assets/Catagorypage.png')}
+                 source={require('../../../image/Helps/EventPage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
             <View style={{ height:'100%', width:140, marginLeft:40}}>
                 <Image
-                 source={require('./assets/Addcatagorypage.png')}
+                 source={require('../../../image/Helps/AddandEditEventpage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
           </View>
@@ -76,12 +76,12 @@ const Helps = () => {
           <View style={{width:'100%', height:250, marginTop:50, flexDirection:'row'}}>
             <View style={{height:'100%', width:140}}>
                 <Image
-                 source={require('./assets/EventPage.png')}
+                 source={require('../../../image/Helps/EventPage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
             <View style={{ height:'100%', width:140, marginLeft:40}}>
                 <Image
-                 source={require('./assets/AddandEditEventpage.png')}
+                 source={require('../../../image/Helps/AddandEditEventpage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
           </View>
@@ -94,12 +94,12 @@ const Helps = () => {
           <View style={{width:'100%', height:250, marginTop:50, flexDirection:'row'}}>
             <View style={{height:'100%', width:140}}>
                 <Image
-                 source={require('./assets/Patternpage.png')}
+                 source={require('../../../image/Helps/Patternpage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
             <View style={{ height:'100%', width:140, marginLeft:40}}>
                 <Image
-                 source={require('./assets/AddPatternpage.png')}
+                 source={require('../../../image/Helps/AddPatternpage.png')}
                  style= {{flex:1 , width: undefined, height: undefined}}/>
             </View>
           </View>
