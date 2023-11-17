@@ -47,7 +47,7 @@ export default function AddEvent({ navigation, route }) {
           <View
             style={{
               flexDirection: "row",
-              height: 420,
+              height: 10,
               justifyContent: "center",
               alignItems: "flex-end",
             }}

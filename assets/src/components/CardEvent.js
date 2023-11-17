@@ -1,11 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-const CardEvent = ({ onPress, title, day, color }) => {
+const CardEvent = ({ onPress, title, day, color, time }) => {
     console.log(day)
   return (
     <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor: color}]}>
-      <Text style={[styles.time, { color: "white" }]}>{day}</Text>
+      <Text style={[styles.time, { color: "white" }]}>{day + " " + time}</Text>
       <Text style={[styles.title, { color: "white" }]}>{title}</Text>
 
       {/*<View style={{ flexDirection: "row", marginTop: 10 }}>

@@ -220,6 +220,7 @@ const PatternDetail =  ({ navigation, route }) => {
                     title={events.event.title}
                     day={events.day}
                     color={events.event.categories.bg}
+                    time={events.event.startTime}
                   />
                 </View>
               ))}

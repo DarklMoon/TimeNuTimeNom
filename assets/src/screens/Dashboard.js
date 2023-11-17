@@ -22,15 +22,13 @@ import HeaderComponent from "../components/HeaderComponent";
 import CardEvent from "../components/CardEvent";
 
 const Dashboard = ({ navigation, route }) => {
-  const [selected, setSelected] = useState("");
   const [selectedDate, setSelectedDate] = useState([""]);
   const [onPressDays , setOnPressDays] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [eventShow, setEventShow] = useState([]);
   const isFocused = useIsFocused();
   const { user } = useSelector(state=>state.user)
   const [usePattern, setUsePattern] = useState([]);
-
+  
   // {
     //   "2023-11-18":{
       //     periods:[
@@ -44,9 +42,11 @@ const Dashboard = ({ navigation, route }) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
- const [markedDate, setMarkedDate] = useState([]);
-
+        
+  const [markedDate, setMarkedDate] = useState([]);
+  const [selected, setSelected] = useState("");
+  const [eventShow, setEventShow] = useState([]);
+        
   const fetchEvents = async () => {
     const q = query(eventRef, where("userId", "==", user.uid));
     const querySnapshot = await getDocs(q);
@@ -55,24 +55,25 @@ const Dashboard = ({ navigation, route }) => {
       data.push({ ...doc.data(), id: doc.id });
     });
     setEventShow(data);
-    console.log("EVENT_SHOW_UP_IN_FETCH: ", eventShow);
+    // console.log("EVENT_SHOW_UP_IN_FETCH: ", eventShow);
     console.log("SHOW_UP_DATA: ", data);
+
     return data;
 
   };
-
 
   useEffect(() => {
     const fetchAllEvent = async () => {
       const result = await fetchEvents();
       console.log("Result_UseEffect:", result);
-      setEventShow(result)
-      console.log("EVENT_SHOW: ", eventShow);
+
+      // setEventShow(result)
+      // console.log("EVENT_SHOW: ", eventShow);
 
       const transformedData = {};
 
-      eventShow.forEach((event) => {
-        const dateKey = event.startTime;
+      result.forEach((event) => {
+        const dateKey = event.startDate;
 
         if (!transformedData[dateKey]) {
           transformedData[dateKey] = {
@@ -106,27 +107,17 @@ const Dashboard = ({ navigation, route }) => {
     fetchAllEvent()
     console.log("MARKED_DATE outside: ", markedDate);
 
-  }, []);
-
-  useEffect(() => {
     const currentDay = new Date();
     const currentDayS = currentDay.toISOString().slice(0, 10);
     setSelected(currentDayS);
+
   }, []);
 
   const rawSelectdDay = new Date(selected);
   console.log("SELECTED:", selected);
 
   const dayNumber = rawSelectdDay.getDay();
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",];
   const dayName = daysOfWeek[dayNumber];
   console.log("CONVERT:", dayName); 
 

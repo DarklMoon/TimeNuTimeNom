@@ -495,7 +495,7 @@ const AllEvent = ({ navigation, route }) => {
                   style={{
                     justifyContent: "flex-end",
                     alignItems: "center",
-                    height: Aspect * 200,
+                    height: Aspect * 100,
                   }}
                 >
                   <View
