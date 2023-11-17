@@ -24,7 +24,9 @@ import {
   Firestore,
   addDoc,
   deleteDoc,
+  doc,
   getDocs,
+  getFirestore,
   query,
   where,
 } from "firebase/firestore";
@@ -38,13 +40,16 @@ import { Button } from "react-native-paper";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Geocoder from "react-native-geocoding";
 import { TouchableOpacity } from "react-native-gesture-handler";
-// import firebase from "../config/firebase";
+import { useIsFocused } from "@react-navigation/native";
+
+
 
 const Event = ({ navigation, route }) => {
   const category = route.params.Category;
   Geocoder.init("AIzaSyDhf8S__daUXzZmM7SbeiMXaU_XcfhIu4M");
 
   const [Name, setName] = useState("");
+  const isFocused = useIsFocused();
   // const [Name, sestName] = useState("");
   const [description, setDescription] = useState("");
   //modal
@@ -111,7 +116,7 @@ const Event = ({ navigation, route }) => {
   useEffect(() => {
     fetchPattern();
     setState(false);
-  }, [State]);
+  }, [isFocused]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const handleChange = (text) => {
@@ -229,13 +234,24 @@ const Event = ({ navigation, route }) => {
     setDescription("");
   };
 
-  const removeFirstObject = async (item) => {};
+  const deletePattern = async (index) => {
+    try {
+      const db = getFirestore(); // Make sure to initialize your Firestore instance
+      const documentRef = doc(db, "events", index.id);
+      await deleteDoc(documentRef);
+      console.log("Document deleted successfully");
+      fetchPattern();
+    } catch (error) {
+      console.error("Error deleting document: ", error.message);
+    }
+  };
 
   const Item = (data) => (
-    <TouchableOpacity 
-    onPress={()=>{
-      navigation.navigate("")
-    }}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("Detail", { prev: "Event", data: data.datas });
+      }}
+    >
       <View
         style={{
           // backgroundColor:'skyblue',
@@ -267,7 +283,7 @@ const Event = ({ navigation, route }) => {
             size={24}
             color="black"
             onPress={() => {
-              removeFirstObject(data.datas);
+              deletePattern(data.datas);
             }}
           />
         </View>

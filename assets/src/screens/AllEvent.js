@@ -8,6 +8,7 @@ import {
   FlatList,
   Modal,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
@@ -18,13 +19,15 @@ import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
-import { eventRef } from "../config/firebase";
+import { categoryRef, eventRef } from "../config/firebase";
 import { Entypo } from "@expo/vector-icons";
 import {
   Firestore,
   addDoc,
   deleteDoc,
+  doc,
   getDocs,
+  getFirestore,
   query,
   where,
 } from "firebase/firestore";
@@ -38,9 +41,13 @@ import { Button } from "react-native-paper";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import Geocoder from "react-native-geocoding";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import DropDownPicker from "react-native-dropdown-picker";
 // import firebase from "../config/firebase";
+import { useIsFocused } from "@react-navigation/native";
+import { ScrollView } from "react-native";
 
 const AllEvent = ({ navigation, route }) => {
+  const isFocused = useIsFocused();
   Geocoder.init("AIzaSyDhf8S__daUXzZmM7SbeiMXaU_XcfhIu4M");
 
   const [Name, setName] = useState("");
@@ -62,6 +69,7 @@ const AllEvent = ({ navigation, route }) => {
 
   const [Event, setEvent] = useState([]);
   const [Allevent, setAllevent] = useState([]);
+  const [Category, setCategory] = useState([]);
 
   const [State, setState] = useState(true);
 
@@ -93,21 +101,30 @@ const AllEvent = ({ navigation, route }) => {
     .catch((error) => console.log(error));
 
   //firebase
-  const fetchPattern = async () => {
+  const fetchEvents = async () => {
     const q = query(eventRef, where("userId", "==", user.uid));
+    const qw = query(categoryRef, where("userId", "==", user.uid));
     const querySnapshot = await getDocs(q);
+    const querySnapshot2 = await getDocs(qw);
+
     let data = [];
+    let data2 = [];
     querySnapshot.forEach((doc) => {
       data.push({ ...doc.data(), id: doc.id });
     });
+    querySnapshot2.forEach((doc) => {
+      data2.push({ ...doc.data(), id: doc.id });
+    });
     setAllevent(data);
-    console.log(data);
+    setCategory(data2);
+    console.log("555" + Category);
   };
+  //firebase
 
   useEffect(() => {
-    fetchPattern();
+    fetchEvents();
     setState(false);
-  }, [State]);
+  }, [isFocused]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const handleChange = (text) => {
@@ -194,7 +211,7 @@ const AllEvent = ({ navigation, route }) => {
       categories: {
         WorkOut: "#FFA607",
         Name: "WorkOut",
-        bg: "#ffce47",
+        bg: "#C2C2C2",
       },
       place: location,
       startDate: Startdate,
@@ -207,6 +224,23 @@ const AllEvent = ({ navigation, route }) => {
     setEvent(dataEvent);
     setState(true);
     clearInput();
+  };
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([]);
+
+  const setdropdown = () => {
+    let data = [];
+    Category.forEach((index) => {
+      data.push({
+        backgroundColor: index.backgroundColor,
+        label: index.categoryName,
+        value: index.categoryName,
+      });
+    });
+    setItems(data);
+    console.log(items);
   };
 
   useEffect(() => {
@@ -225,7 +259,17 @@ const AllEvent = ({ navigation, route }) => {
     setDescription("");
   };
 
-  const removeFirstObject = async (item) => {};
+  const deletePattern = async (index) => {
+    try {
+      const db = getFirestore(); // Make sure to initialize your Firestore instance
+      const documentRef = doc(db, "events", index.id);
+      await deleteDoc(documentRef);
+      console.log("Document deleted successfully");
+      fetchEvents();
+    } catch (error) {
+      console.error("Error deleting document: ", error.message);
+    }
+  };
 
   const Item = (data) => (
     <View
@@ -236,14 +280,23 @@ const AllEvent = ({ navigation, route }) => {
         margin: 5,
         borderRadius: 15,
         border: 0,
+        shadowColor: "#000",
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.7,
+        elevation: 5,
       }}
     >
-      <View style={{ flexDirection: "row" }}>
-        <Text style={{ fontSize: 16, marginRight: 10 }}>{data.endTime}</Text>
-        <Text style={{ fontSize: 16 }}>19/9/65</Text>
-      </View>
-      <Text style={styles.title}>{data.title}</Text>
-
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Detail", { prev: "Event", data: data.datas });
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <Text style={{ fontSize: 16, marginRight: 10 }}>{data.endTime}</Text>
+          <Text style={{ fontSize: 16 }}>19/9/65</Text>
+        </View>
+        <Text style={styles.title}>{data.title}</Text>
+      </TouchableOpacity>
       <View
         style={{
           flexDirection: "row",
@@ -259,7 +312,7 @@ const AllEvent = ({ navigation, route }) => {
           size={24}
           color="black"
           onPress={() => {
-            removeFirstObject(data.datas);
+            deletePattern(data.datas);
           }}
         />
       </View>
@@ -283,274 +336,275 @@ const AllEvent = ({ navigation, route }) => {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={[styles.AddEventsite]}>
-              <View style={{ margin: 10, marginLeft: 15 }}>
-                <TextInput
-                  style={styles.Input}
-                  placeholder="Name"
-                  value={Name}
-                  onChangeText={(input) => {
-                    setName(input);
-                  }}
-                ></TextInput>
-                {/* <TextInput
-                  style={styles.Input}
-                  placeholder="Catagory"
-                  value={CatagoryName}
-                  onChangeText={(input) => {
-                    setCatagoryName(input);
-                  }}
-                ></TextInput> */}
-                {/* <TextInput style={styles.Input} placeholder="Place"></TextInput> */}
-                <View style={{ marginTop: 10 }}>
-                  <Text
-                    style={{ fontSize: 20, marginBottom: 10, marginLeft: 20 }}
-                  >
-                    Date & Time
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <Text style={{ fontSize: 16 }}>Start</Text>
-                    <Text style={{ fontSize: 16 }}>End</Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                    }}
-                  >
-                    <Pressable
-                      style={{ flexDirection: "row" }}
-                      onPress={() => {
-                        showDatePicker();
-                        setSorE("s");
+          <SafeAreaView style={styles.centeredView}>
+            <ScrollView>
+              <View>
+                <View style={[styles.AddEventsite]}>
+                  <View style={{ margin: 10, marginLeft: 15 }}>
+                    <TextInput
+                      style={styles.Input}
+                      placeholder="Name"
+                      value={Name}
+                      onChangeText={(input) => {
+                        setName(input);
                       }}
-                    >
-                      <Text style={{ marginTop: 5 }}>{Startdate}</Text>
-                      <AntDesign
-                        style={{ marginLeft: 5 }}
-                        name="calendar"
-                        size={28}
-                        color="black"
-                      />
-                    </Pressable>
-                    <Pressable
-                      style={{ flexDirection: "row", marginLeft: 5 }}
-                      onPress={() => {
-                        showDatePicker();
-                        setSorE("e");
-                      }}
-                    >
-                      <Text style={{ marginTop: 5 }}>{Enddate}</Text>
-                      <AntDesign
-                        style={{ marginLeft: 5 }}
-                        name="calendar"
-                        size={28}
-                        color="orange"
-                      />
-                    </Pressable>
-                    <DateTimePickerModal
-                      isVisible={isDatePickerVisible}
-                      mode="date"
-                      onConfirm={handleConfirm}
-                      onCancel={hideDatePicker}
-                    />
-                  </View>
-
-                  {/* Time */}
-                  <View
-                    style={{
-                      marginTop: 30,
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                    }}
-                  >
-                    <Pressable
-                      style={{ flexDirection: "row" }}
-                      onPress={() => {
-                        showTimePicker();
-                        setcheckTime("S");
-                      }}
-                    >
-                      <Text style={{ marginTop: 5 }}>{Starttime}</Text>
-                      <AntDesign
-                        style={{ marginLeft: 5 }}
-                        name="clockcircle"
-                        size={28}
-                        color="black"
-                      />
-                    </Pressable>
-                    <Pressable
-                      style={{ flexDirection: "row", marginLeft: 5 }}
-                      onPress={() => {
-                        showTimePicker();
-                        setcheckTime("E");
-                      }}
-                    >
-                      <Text style={{ marginTop: 5 }}>{Endtime}</Text>
-                      <AntDesign
-                        style={{ marginLeft: 5 }}
-                        name="clockcircle"
-                        size={28}
-                        color="orange"
-                      />
-                    </Pressable>
-                    <DateTimePickerModal
-                      isVisible={isTimePickerVisible}
-                      mode="time"
-                      onConfirm={handleTimeConfirm}
-                      onCancel={hideTimePicker}
-                    />
-                  </View>
-                </View>
-
-                <View style={{ marginLeft: 20 }}>
-                  <TouchableOpacity
-                    style={{
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <Text style={{ fontSize: 20, marginBottom: 10 }}>Map</Text>
-                    <View style={{ flexDirection: "row" }}>
-                      <Entypo
+                    ></TextInput>
+                    <View></View>
+                    <View style={{ marginTop: 10 }}>
+                      <Text
                         style={{
-                          borderWidth: 1,
-                          shadowColor: "black",
-                          padding: 4,
-                          paddingLeft: 15,
-                          paddingRight: 15,
-                          borderRadius: 10,
-                          marginRight: 10,
-                        }}
-                        name="map"
-                        size={30}
-                        color="black"
-                        onPress={() => {
-                          setMapVisible(!MapVisible);
-                        }}
-                      />
-                      <View></View>
-                      <Pressable
-                        style={{
-                          margin: 4,
-                          borderWidth: 1,
-                          borderColor: "#1EE85F",
-                          borderRadius: 10,
-                          padding: 4,
-                          paddingLeft: 15,
-                          paddingRight: 15,
-                          backgroundColor: "#1EE85F",
-                          shadowColor: "black",
-                          shadowOffset: { width: 2, height: 2 },
-                          shadowOpacity: 0.5,
-                          shadowRadius: 5,
-                          elevation: 5,
-                        }}
-                        onPress={() => {
-                          setLocation("");
+                          fontSize: 20,
+                          marginBottom: 10,
+                          marginLeft: 20,
                         }}
                       >
-                        <Text style={{ fontSize: 16 }}>reset</Text>
-                      </Pressable>
-                    </View>
-                  </TouchableOpacity>
-                  <Text style={{ marginRight: 10, fontSize: 16 }}>
-                    {location}
-                  </Text>
-                </View>
-                <TouchableOpacity>
-                  <View style={{ justifyContent: "flex-start" }}>
-                    <Text
-                      style={{ margin: 15, fontSize: 22, marginBottom: -5 }}
-                    >
-                      Description
-                    </Text>
-
-                    <View>
-                      <TextInput
+                        Date & Time
+                      </Text>
+                      <View
                         style={{
-                          margin: 15,
-                          borderWidth: 0.5,
-                          justifyContent: "flex-start",
-                          fontSize: 18,
-                        }}
-                        placeholder="description"
-                        multiline={true}
-                        numberOfLines={5}
-                        value={description}
-                        onChangeText={(input) => {
-                          setDescription(input);
-                        }}
-                      />
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    height: Aspect * 100,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                    }}
-                  >
-                    <View style={{}}>
-                      <Pressable
-                        style={[
-                          styles.buttons,
-                          {
-                            backgroundColor: "#d9d9d9",
-                            marginRight: 15,
-                            paddingLeft: 20,
-                            paddingRight: 20,
-                            elevation: 5,
-                          },
-                        ]}
-                        onPress={() => {
-                          setModalVisible(!modalVisible);
-                          clearInput();
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                          marginBottom: 10,
                         }}
                       >
-                        <Text style={{ fontSize: 22 }}>Canceled</Text>
-                      </Pressable>
-                    </View>
-                    <View>
-                      <Pressable
-                        style={[
-                          styles.buttons,
-                          { backgroundColor: "red", elevation: 5 },
-                        ]}
-                        onPress={() => {
-                          Eventhandler();
-                          setState(true);
-                          setModalVisible(!modalVisible);
+                        <Text style={{ fontSize: 16 }}>Start</Text>
+                        <Text style={{ fontSize: 16 }}>End</Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-around",
                         }}
                       >
-                        <Text
-                          style={{
-                            fontSize: 22,
-                            paddingLeft: 30,
-                            paddingRight: 30,
+                        <Pressable
+                          style={{ flexDirection: "row" }}
+                          onPress={() => {
+                            showDatePicker();
+                            setSorE("s");
                           }}
                         >
-                          Apply
+                          <Text style={{ marginTop: 5 }}>{Startdate}</Text>
+                          <AntDesign
+                            style={{ marginLeft: 5 }}
+                            name="calendar"
+                            size={28}
+                            color="black"
+                          />
+                        </Pressable>
+                        <Pressable
+                          style={{ flexDirection: "row", marginLeft: 5 }}
+                          onPress={() => {
+                            showDatePicker();
+                            setSorE("e");
+                          }}
+                        >
+                          <Text style={{ marginTop: 5 }}>{Enddate}</Text>
+                          <AntDesign
+                            style={{ marginLeft: 5 }}
+                            name="calendar"
+                            size={28}
+                            color="orange"
+                          />
+                        </Pressable>
+                        <DateTimePickerModal
+                          isVisible={isDatePickerVisible}
+                          mode="date"
+                          onConfirm={handleConfirm}
+                          onCancel={hideDatePicker}
+                        />
+                      </View>
+
+                      {/* Time */}
+                      <View
+                        style={{
+                          marginTop: 30,
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        <Pressable
+                          style={{ flexDirection: "row" }}
+                          onPress={() => {
+                            showTimePicker();
+                            setcheckTime("S");
+                          }}
+                        >
+                          <Text style={{ marginTop: 5 }}>{Starttime}</Text>
+                          <AntDesign
+                            style={{ marginLeft: 5 }}
+                            name="clockcircle"
+                            size={28}
+                            color="black"
+                          />
+                        </Pressable>
+                        <Pressable
+                          style={{ flexDirection: "row", marginLeft: 5 }}
+                          onPress={() => {
+                            showTimePicker();
+                            setcheckTime("E");
+                          }}
+                        >
+                          <Text style={{ marginTop: 5 }}>{Endtime}</Text>
+                          <AntDesign
+                            style={{ marginLeft: 5 }}
+                            name="clockcircle"
+                            size={28}
+                            color="orange"
+                          />
+                        </Pressable>
+                        <DateTimePickerModal
+                          isVisible={isTimePickerVisible}
+                          mode="time"
+                          onConfirm={handleTimeConfirm}
+                          onCancel={hideTimePicker}
+                        />
+                      </View>
+                    </View>
+
+                    <View style={{ marginLeft: 20 }}>
+                      <TouchableOpacity
+                        style={{
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <Text style={{ fontSize: 20, marginBottom: 10 }}>
+                          Map
                         </Text>
-                      </Pressable>
+                        <View style={{ flexDirection: "row" }}>
+                          <Entypo
+                            style={{
+                              borderWidth: 1,
+                              shadowColor: "black",
+                              padding: 4,
+                              paddingLeft: 15,
+                              paddingRight: 15,
+                              borderRadius: 10,
+                              marginRight: 10,
+                            }}
+                            name="map"
+                            size={30}
+                            color="black"
+                            onPress={() => {
+                              setMapVisible(!MapVisible);
+                            }}
+                          />
+                          <View></View>
+                          <Pressable
+                            style={{
+                              margin: 4,
+                              borderWidth: 1,
+                              borderColor: "#1EE85F",
+                              borderRadius: 10,
+                              padding: 4,
+                              paddingLeft: 15,
+                              paddingRight: 15,
+                              backgroundColor: "#1EE85F",
+                              shadowColor: "black",
+                              shadowOffset: { width: 2, height: 2 },
+                              shadowOpacity: 0.5,
+                              shadowRadius: 5,
+                              elevation: 5,
+                            }}
+                            onPress={() => {
+                              setLocation("");
+                            }}
+                          >
+                            <Text style={{ fontSize: 16 }}>reset</Text>
+                          </Pressable>
+                        </View>
+                      </TouchableOpacity>
+                      <Text style={{ marginRight: 10, fontSize: 16 }}>
+                        {location}
+                      </Text>
+                    </View>
+                    <TouchableOpacity>
+                      <View style={{ justifyContent: "flex-start" }}>
+                        <Text
+                          style={{ margin: 15, fontSize: 22, marginBottom: -5 }}
+                        >
+                          Description
+                        </Text>
+
+                        <View>
+                          <TextInput
+                            style={{
+                              margin: 15,
+                              borderWidth: 0.5,
+                              fontSize: 18,
+                            }}
+                            placeholder="description"
+                            // multiline={true}
+                            // numberOfLines={5}
+                            value={description}
+                            onChangeText={(input) => {
+                              setDescription(input);
+                            }}
+                          />
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        height: Aspect * 200,
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                        }}
+                      >
+                        <View style={{}}>
+                          <Pressable
+                            style={[
+                              styles.buttons,
+                              {
+                                backgroundColor: "#d9d9d9",
+                                marginRight: 15,
+                                paddingLeft: 20,
+                                paddingRight: 20,
+                                elevation: 5,
+                              },
+                            ]}
+                            onPress={() => {
+                              setModalVisible(!modalVisible);
+                              clearInput();
+                            }}
+                          >
+                            <Text style={{ fontSize: 22 }}>Canceled</Text>
+                          </Pressable>
+                        </View>
+                        <View>
+                          <Pressable
+                            style={[
+                              styles.buttons,
+                              { backgroundColor: "red", elevation: 5 },
+                            ]}
+                            onPress={() => {
+                              Eventhandler();
+                              setState(true);
+                              setModalVisible(!modalVisible);
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 22,
+                                paddingLeft: 30,
+                                paddingRight: 30,
+                              }}
+                            >
+                              Apply
+                            </Text>
+                          </Pressable>
+                        </View>
+                      </View>
                     </View>
                   </View>
                 </View>
               </View>
-            </View>
-          </View>
+            </ScrollView>
+          </SafeAreaView>
         </Modal>
         {/* modal */}
 
@@ -652,7 +706,10 @@ const AllEvent = ({ navigation, route }) => {
         {/* add button */}
         <Pressable
           style={[styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}
+          onPress={() => {
+            setModalVisible(true);
+            setdropdown();
+          }}
         >
           <Text style={[styles.textStyle, styles.Open]}>+</Text>
         </Pressable>
@@ -732,6 +789,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     backgroundColor: "rgba(0,0,0,0.4)",
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 5,
   },
   modalView: {
     width: 300,
@@ -782,6 +844,10 @@ const styles = StyleSheet.create({
     margin: 20,
     marginTop: 80,
     borderRadius: 15,
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
   },
   Input: {
     margin: 15,

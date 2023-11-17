@@ -44,7 +44,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { setUser } from "../redux/slices/user";
-
+import DetailEvent from "../screens/Details";
 const DrawerNavigator = createDrawerNavigator();
 const BottmTapNavigator = createBottomTabNavigator();
 const StackPatternNavigator = createNativeStackNavigator();
@@ -63,14 +63,26 @@ export default function Navigator() {
   })
   // const { user } = useAuth();
 
+  function AboutEvent() {
+    return (
+      <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
+        <StackLoginNavigator.Screen name="AllEvent" component={AllEvent} />
+        <StackLoginNavigator.Screen name="EditEvent" component={editEvent} />
+        <StackLoginNavigator.Screen name="Detail" component={DetailEvent} />
+      </StackLoginNavigator.Navigator>
+    );
+  }
+  
+
 
 function AddEventNavigator() {
   return (
-    <StackLoginNavigator.Navigator screenOptions={{ headerShown: true }}>
+    <StackLoginNavigator.Navigator screenOptions={{ headerShown: false }}>
       <StackLoginNavigator.Screen name="Category" component={Category} />
       <StackLoginNavigator.Screen name="Event" component={Event} />
       <StackLoginNavigator.Screen name="addEvent" component={AddEvent} />
       <StackLoginNavigator.Screen name="EditEvent" component={editEvent} />
+      <StackLoginNavigator.Screen name="Detail" component={DetailEvent} />
     </StackLoginNavigator.Navigator>
   );
 }
@@ -116,7 +128,7 @@ function AddEventNavigator() {
         />
         <BottmTapNavigator.Screen
           name="Event"
-          component={AllEvent}
+          component={AboutEvent}
           options={{
             tabBarIcon: ({ color, size }) => {
               return (

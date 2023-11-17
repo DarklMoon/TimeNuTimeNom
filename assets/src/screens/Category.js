@@ -25,11 +25,21 @@ import { EvilIcons } from "@expo/vector-icons";
 import { useEffect } from "react";
 import { categoryRef } from "../config/firebase";
 import { useSelector } from "react-redux";
-import { addDoc, getDocs, query, where } from "firebase/firestore";
+import { Feather } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import {
+  addDoc,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 
 const Category = ({ navigation }) => {
   //Input
-  const [CatagoryName, setCatagoryName] = useState("_");
+  const [CatagoryName, setCatagoryName] = useState("");
   const [ColorName, setColorName] = useState("red");
 
   const [State, setState] = useState(true);
@@ -89,9 +99,9 @@ const Category = ({ navigation }) => {
     querySnapshot.forEach((doc) => {
       data.push({ ...doc.data(), id: doc.id });
     });
-
-    setData(data);
     console.log(data);
+    setData(data);
+    // console.log(data);
   };
 
   const Eventhandler = () => {
@@ -151,32 +161,64 @@ const Category = ({ navigation }) => {
     setState(false);
   }, [State]);
 
+  const deletePattern = async (index) => {
+    console.log(index.id);
+    try {
+      const db = getFirestore(); // Make sure to initialize your Firestore instance
+      const documentRef = doc(db, "categories", index.id);
+      await deleteDoc(documentRef);
+      console.log("Document deleted successfully");
+      fetchCategory();
+    } catch (error) {
+      console.error("Error deleting document: ", error.message);
+    }
+  };
+
   const clearInput = () => {
     setCatagoryName("");
     setColorName("red");
   };
 
   const Item = (data) => (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate("Event", {
-          prev: "Category",
-          Category: data.category,
-        });
+    <View
+      style={{
+        backgroundColor: data.backgroundColor,
+        padding: 22,
+        margin: 5,
+        borderRadius: 15,
+        border: 0,
       }}
     >
-      <View
-        style={{
-          backgroundColor: data.backgroundColor,
-          padding: 22,
-          margin: 5,
-          borderRadius: 15,
-          border: 0,
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Event", {
+            prev: "Category",
+            Category: data.category,
+          });
         }}
       >
         <Text style={styles.title}>{data.title}</Text>
+      </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: "row",
+          position: "absolute",
+          bottom: 30,
+          right: 20,
+        }}
+      >
+        <Feather name="edit" size={24} color="black" />
+        <FontAwesome5
+          name="trash"
+          marginLeft={20}
+          size={24}
+          color="black"
+          onPress={() => {
+            deletePattern(data.category);
+          }}
+        />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -296,18 +338,18 @@ const Category = ({ navigation }) => {
                 />
               </View>
 
-                <FlatList
-                  style={{ marginBottom: 130 }}
-                  data={data}
-                  renderItem={({ item }) => (
-                    <Item
-                      category ={item}
-                      backgroundColor={item.backgroundColor}
-                      title={item.categoryName}
-                    />
-                  )}
-                  keyExtractor={(item) => item.id}
-                />
+              <FlatList
+                style={{ marginBottom: 130 }}
+                data={data}
+                renderItem={({ item }) => (
+                  <Item
+                    category={item}
+                    backgroundColor={item.backgroundColor}
+                    title={item.categoryName}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+              />
             </View>
           </View>
         </View>
