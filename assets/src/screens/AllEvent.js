@@ -145,7 +145,7 @@ const AllEvent = ({ navigation, route }) => {
       hour: "2-digit",
       minute: "2-digit",
     });
-
+    
     if (checkTime == "E") {
       console.warn("A Enddtime picked: ", Time_formatted);
       setEndtime(Time_formatted);

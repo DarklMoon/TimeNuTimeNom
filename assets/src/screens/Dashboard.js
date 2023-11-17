@@ -22,21 +22,23 @@ import HeaderComponent from "../components/HeaderComponent";
 import CardEvent from "../components/CardEvent";
 
 const Dashboard = ({ navigation, route }) => {
-  const [selectedDate, setSelectedDate] = useState([""]);
-  const [onPressDays , setOnPressDays] = useState(false);
+  // const [selectedDate, setSelectedDate] = useState([""]);
+  // const [onPressDays , setOnPressDays] = useState(false);
+  // const [usePattern, setUsePattern] = useState([]);
+
   const [isModalVisible, setModalVisible] = useState(false);
   const isFocused = useIsFocused();
   const { user } = useSelector(state=>state.user)
-  const [usePattern, setUsePattern] = useState([]);
+  const [renderCardEvent, setCardEvent] = useState([]);
   
   // {
     //   "2023-11-18":{
       //     periods:[
-        //      {startingDay:false, endingDay:true, color:"red"}
-        //     ],
-        //   },
-        //   [selected]: { selected: true, selectedColor: "orange" },
-        // }
+      //      {startingDay:false, endingDay:true, color:"red"}
+      //     ],
+      //   },
+      //   [selected]: { selected: true, selectedColor: "orange" },
+  // }
         
         
   const toggleModal = () => {
@@ -46,7 +48,10 @@ const Dashboard = ({ navigation, route }) => {
   const [markedDate, setMarkedDate] = useState([]);
   const [selected, setSelected] = useState("");
   const [eventShow, setEventShow] = useState([]);
-        
+
+  const [completed, setCompleted] = useState(0);
+  const [toDo, setToDo] = useState(0);
+
   const fetchEvents = async () => {
     const q = query(eventRef, where("userId", "==", user.uid));
     const querySnapshot = await getDocs(q);
@@ -62,6 +67,30 @@ const Dashboard = ({ navigation, route }) => {
 
   };
 
+const analyzeEvent = async () => {
+  const countPeriods = {};
+  setToDo(0);
+  setCompleted(0);
+  for (const date in markedDate) {
+    if (typeof markedDate[date] === "object" && markedDate[date].periods) {
+      const numberOfPeriods = markedDate[date].periods.length;
+      countPeriods[date] = numberOfPeriods;
+
+      if (new Date() > new Date(date)) {
+        setCompleted((prevCompleted) => prevCompleted + numberOfPeriods);
+        console.log(
+          `The current Date is later than the Past Date. Complete[${typeof completed}]`
+        );
+      } else {
+        setToDo((prevToDo) => prevToDo + numberOfPeriods);
+        console.log(
+          `The current Date is earlier than the Future Date. ToDo[${toDo}]-${date}`
+        );
+      }
+    }
+  }
+  console.log("COUNT_PERIODS: ", countPeriods);
+};
   useEffect(() => {
     const fetchAllEvent = async () => {
       const result = await fetchEvents();
@@ -102,16 +131,22 @@ const Dashboard = ({ navigation, route }) => {
 
       setMarkedDate(transformedData);
       console.log("MARKED_DATE: ", markedDate);
+
+      await analyzeEvent();
+
     }
     
     fetchAllEvent()
     console.log("MARKED_DATE outside: ", markedDate);
 
+
     const currentDay = new Date();
     const currentDayS = currentDay.toISOString().slice(0, 10);
     setSelected(currentDayS);
 
-  }, []);
+
+  }, [isFocused]);
+
 
   const rawSelectdDay = new Date(selected);
   console.log("SELECTED:", selected);
@@ -195,7 +230,21 @@ const Dashboard = ({ navigation, route }) => {
                 onDayPress={(day) => {
                   setSelected(day.dateString);
                   fetchEvents();
-                  toggleModal();
+
+                  // console.log("BEFORE_PRESS_DAY:", eventShow);
+
+                  const matchedObjects = eventShow.filter(
+                    (item) => item.startDate === day.dateString
+                  );
+
+                  if (matchedObjects.length > 0) {
+                    console.log("Matched Object:", matchedObjects);
+                    setCardEvent(matchedObjects);
+                    toggleModal();
+                  } else {
+                    console.log("No match found for the given date.");
+                    navigation.navigate("Event");
+                  }
                 }}
                 markingType="multi-period"
                 markedDates={markedDate}
@@ -222,7 +271,7 @@ const Dashboard = ({ navigation, route }) => {
                   <View style={{ position: "relative", top: 23, left: 35 }}>
                     <Text style={{ color: "white", fontSize: 15 }}>
                       <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-                        15
+                        {completed}
                       </Text>{" "}
                       events
                     </Text>
@@ -247,7 +296,7 @@ const Dashboard = ({ navigation, route }) => {
                   <View style={{ position: "relative", top: 23, left: 35 }}>
                     <Text style={{ color: "white", fontSize: 15 }}>
                       <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-                        20
+                        {toDo}
                       </Text>{" "}
                       events
                     </Text>
@@ -273,24 +322,24 @@ const Dashboard = ({ navigation, route }) => {
             style={{ marginTop: 300 }}
           >
             <View style={styles.modalContent}>
-              {/* <AntDesign
-                name="close"
-                size={24}
-                color="black"
-                style={{ alignSelf: "flex-end" }}
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-              /> */}
               <View style={styles.center}>
-                <CardEvent
-                  onPress={() => {
-                    console.warn("Go to Event Detail Page.");
-                  }}
-                  title={"events.event.title"}
-                  day={"events.day"}
-                  color={"#5d6eff"}
-                />
+                <View style={{ paddingHorizontal: "6em" }}>
+                  {renderCardEvent.map((events, index) => (
+                    <View key={index}>
+                      <CardEvent
+                        onPress={() => {
+                          console.warn(
+                            `Go to Event Detail Page. Attached Key [${events.id}]`
+                          );
+                        }}
+                        title={events.title}
+                        color={events.categories.bg}
+                        time={events.startTime}
+                        length= {50}
+                      />
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
           </ScrollView>
@@ -317,7 +366,6 @@ const styles = StyleSheet.create({
   carlender: {
     borderRadius: 10,
     margin: 5,
-    // paddingTop: 30,
     borderWidth: 1,
     maxHeight: 1000,
   },

@@ -28,8 +28,6 @@ import {
 } from "firebase/firestore";
 import { useSelector } from "react-redux";
 
-
-
 // import { PATTERN_DATA } from "../../data/PatternData";
 import HeaderComponent from "../../components/HeaderComponent";
 import ButtonComponent from "../../components/ButtonComponent";
@@ -38,13 +36,13 @@ import CardEvent from "../../components/CardEvent";
 
 const PatternDetail =  ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState();
+  const [Events, setEvents] = useState([]);
+  const [State, setState] = useState(true);
   const data = route.params;
   const rawArrayOfDays = Object.keys(data.days);
-  // console.log("DATA_PATTERN: ", data);
+  const [storePattern, setUsePattern] = useState([])
 
   const rawEvents = Object.entries(data.days);
-  // console.log("PatternDetail:", rawEvents.length);
-  // console.log("PatternId:", data.id);
 
   const sortDataByDay = (data, type) => {
     const sortOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -143,21 +141,110 @@ const PatternDetail =  ({ navigation, route }) => {
       console.log("EventUseState:", renderCardEvent)
     };
 
-    // Call the fetchDataAndRender function
     fetchDataAndRender();
   }, []);
 
+ const getNextOccurrence = (day, startDate) => {
+   const currentDay = new Date(startDate);
+   const currentDayOfWeek = currentDay.getDay();
+
+   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+   const dayIndex = daysOfWeek.indexOf(day);
+
+   let daysUntilNextOccurrence = dayIndex - currentDayOfWeek;
+
+   if (daysUntilNextOccurrence <= 0) {
+     daysUntilNextOccurrence += 7;
+   }
+
+   currentDay.setDate(currentDay.getDate() + daysUntilNextOccurrence);
+
+   const year = currentDay.getFullYear();
+   const month = String(currentDay.getMonth() + 1).padStart(2, "0");
+   const dayOfMonth = String(currentDay.getDate()).padStart(2, "0");
+
+   return `${year}-${month}-${dayOfMonth}`;
+ }
+
+
+useEffect(() => {
+  if (State) {
+    handleCreateEvents(Events);
+    setState(false);
+  }
+}, [State, Events]);
+
+const handleCreateEvents = async (events) => {
+  try {
+    for (const event of events) {
+      console.log("------\n EVENT_FOR_LOG >>>> :", event)
+      let doc = await addDoc(eventRef, {
+        title: event.title,
+        categories: event.categories,
+        place: event.place,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        startTime: event.StartTime,
+        description: event.description,
+        userId: event.userId,
+      });
+      if (doc && doc.id) {
+        console.log("ADD DATA SUCCESSFUL");
+      }
+    }
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
+
+const Eventhandler = (dataPattern) => {
+
+  const dataEvents = dataPattern.map((item) => {
+    const event = item.event;
+    return {
+      title: event.title,
+      categories: {
+        WorkOut: event.categories.WorkOut,
+        Name: event.categories.Name,
+        bg: event.categories.bg
+      },
+      place: event.place,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      StartTime: event.startTime,
+      description: event.description,
+      userId: event.userId,
+    };
+  });
+
+  setEvents(dataEvents);
+  setState(true);
+};
+
   const usePattern = () => {
-    const currentDay = new Date();
-    console.log(currentDay);
-    navigation.navigate("Dashboard", {
-      days: arrayOfDays,
+
+    const updatedEvents = renderCardEvent.map((eventObj) => {
+      const { day, event } = eventObj;
+      return {
+        event: {
+          ...event,
+          startDate: getNextOccurrence(day, event.startDate),
+        },
+      };
     });
+
+    // setUsePattern(updatedEvents);
+    console.log("UPDATE_EVENTS:", storePattern);
+
+    Eventhandler(updatedEvents)
+    navigation.navigate("Dashboard");
   };
+
+
 
   const deletePattern = async () => {
     try {
-      const db = getFirestore(); // Make sure to initialize your Firestore instance
+      const db = getFirestore();
       const documentRef = doc(db, "patterns", data.id);
       await deleteDoc(documentRef);
       navigation.navigate("Pattern");
@@ -221,6 +308,7 @@ const PatternDetail =  ({ navigation, route }) => {
                     day={events.day}
                     color={events.event.categories.bg}
                     time={events.event.startTime}
+                    length={30}
                   />
                 </View>
               ))}

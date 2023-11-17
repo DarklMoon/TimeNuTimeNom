@@ -1,11 +1,16 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-const CardEvent = ({ onPress, title, day, color, time }) => {
+const CardEvent = ({ onPress, title, day, color, time, length }) => {
     console.log(day)
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor: color}]}>
-      <Text style={[styles.time, { color: "white" }]}>{day + " " + time}</Text>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.item, { backgroundColor: color, paddingHorizontal: length }]}
+    >
+      <Text style={[styles.time, { color: "white" }]}>
+        {day ? day + " " + time : time}
+      </Text>
       <Text style={[styles.title, { color: "white" }]}>{title}</Text>
 
       {/*<View style={{ flexDirection: "row", marginTop: 10 }}>
@@ -23,10 +28,10 @@ const styles = StyleSheet.create({
   item: {
 
     padding: 15,
-    paddingHorizontal: 30,
     marginVertical: 8,
     borderRadius: 10,
     backgroundColor: "black",
+    textAlign: "left"
   },
   title: {
     fontSize: 32,

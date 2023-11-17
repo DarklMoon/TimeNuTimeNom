@@ -211,8 +211,6 @@ const Pattern = ({navigation}) => {
       );
     };
 
-    
-
     return (
       <LinearGradient
         colors={["#2FBCBC", "#FFFFFF"]}
